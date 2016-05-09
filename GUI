@@ -7,8 +7,10 @@ public class GUI {
 	
 	JFrame f;
 	JPanel p;
+	int gridSize;
 	
-	public GUI(){
+	public GUI(int _gridSize){
+		gridSize = _gridSize;
 		f = new JFrame();
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -17,11 +19,11 @@ public class GUI {
 		p = new JPanel(){
 			//Below is Panel Painting
 			public void paintComponent(Graphics g){
-				for (int x = 0; x < 5; x++){
-					for (int y = 0; y < 5; y++){
-						g.drawLine(x*100, 0, x*100, 500);
+				for (int x = 0; x < gridSize; x++){
+					for (int y = 0; y < gridSize; y++){
+						g.drawLine(0,y*(500/(gridSize-1)),500,y*(500/(gridSize-1)));
 					}
-					g.drawLine(0,y*100,500,y*100)
+					g.drawLine(x*(500/(gridSize-1)), 0, x*(500/(gridSize-1)), 500);
 				}
 				System.out.println("Drew Lines (panel edition)!");
 			}
