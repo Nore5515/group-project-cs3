@@ -1,1 +1,16 @@
-//this is where we make the magic
+
+public class Runner {
+
+	public static void main(String args[]){
+		
+		//forgive my naming
+		GUI frick = new GUI();
+		frick.drawGrid();
+		
+		
+		System.out.println("Is this running?");
+		
+	}
+	
+	
+}
