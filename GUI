@@ -1,1 +1,44 @@
-//put gui stuff here
+
+import java.awt.Graphics;
+
+import javax.swing.*;
+
+public class GUI {
+	
+	JFrame f;
+	JPanel p;
+	
+	public GUI(){
+		f = new JFrame();
+		f.setVisible(true);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setSize(500, 500);
+		System.out.println("Work?");
+		p = new JPanel(){
+			//Below is Panel Painting
+			public void paintComponent(Graphics g){
+				for (int x = 0; x < 5; x++){
+					for (int y = 0; y < 5; y++){
+						g.drawLine(x*100, 0, x*100, 500);
+					}
+					g.drawLine(0,y*100,500,y*100)
+				}
+				System.out.println("Drew Lines (panel edition)!");
+			}
+			//Above is Panel Painting
+		};
+		f.add(p);
+	}
+	
+	public void drawGrid() {
+		// TODO Auto-generated method stub
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+}
