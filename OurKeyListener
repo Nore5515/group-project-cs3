@@ -3,13 +3,43 @@ import java.awt.event.KeyListener;
 
 public class OurKeyListener implements KeyListener{
 
+	Player p;
+	GUI gui;
+	int gridSize;
+	int xBuffer;
+	int yBuffer;
+	
+	public OurKeyListener(Player _p, GUI _gui, int _gridSize){
+		p = _p;
+		gui = _gui;
+		gridSize = _gridSize;
+		xBuffer = (gui.getFrame().getWidth())/(gridSize-1);
+		yBuffer = (gui.getFrame().getHeight())/(gridSize-1);
+	}
+	
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		if (arg0.getKeyCode() == KeyEvent.VK_DOWN){
-			System.out.println("Down Pressed!");
+			p.setY(p.getY()+yBuffer);
+			System.out.println(p.getY() + "," + p.getX());
+			gui.callRepaint();
 		}
-		System.out.println("Key Pressed!");
+		if (arg0.getKeyCode() == KeyEvent.VK_UP){
+			p.setY(p.getY()-yBuffer);
+			System.out.println(p.getY() + "," + p.getX());
+			gui.callRepaint();
+		}
+		if (arg0.getKeyCode() == KeyEvent.VK_LEFT){
+			p.setX(p.getX()-xBuffer);
+			System.out.println(p.getY() + "," + p.getX());
+			gui.callRepaint();
+		}
+		if (arg0.getKeyCode() == KeyEvent.VK_RIGHT){
+			p.setX(p.getX()+xBuffer);
+			System.out.println(p.getY() + "," + p.getX());
+			gui.callRepaint();
+		}
 	}
 
 	@Override
@@ -27,5 +57,3 @@ public class OurKeyListener implements KeyListener{
 	
 	
 }
-
-//
