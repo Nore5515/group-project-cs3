@@ -28,7 +28,7 @@ public class GUI {
 		yBuffer = (f.getHeight())/(gridSize-1);
 		
 		colliders = new ArrayList<Collider>();
-		play = new Player(xBuffer,yBuffer);
+		play = new Player(1,1);
 		gui_kList = new OurKeyListener(play, this, gridSize);
 
 		System.out.println("Work?");
