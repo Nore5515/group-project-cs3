@@ -1,138 +1,59 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-	public class arrow_listener extends JPanel implements ActionListener, KeyListener{
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class OurKeyListener implements KeyListener{
+
+	Player p;
+	GUI gui;
+	int gridSize;
+	int xBuffer;
+	int yBuffer;
 	
-		Timer t = new Timer(5, this);
-		double x = 0, y = 0, velx = 0, vely = 0;
-		
-		public arrow_listener(){
-			t.start();
-			addKeyListener(this);
-			setFocusable(true);
-			setFocusTraversalKeysEnabled(false);	
+	public OurKeyListener(Player _p, GUI _gui, int _gridSize){
+		p = _p;
+		gui = _gui;
+		gridSize = _gridSize;
+		xBuffer = (gui.getFrame().getWidth())/(gridSize-1);
+		yBuffer = (gui.getFrame().getHeight())/(gridSize-1);
+	}
+	
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		if (arg0.getKeyCode() == KeyEvent.VK_DOWN){
+			p.setY(p.getY()+yBuffer);
+			System.out.println(p.getY() + "," + p.getX());
+			gui.callRepaint();
 		}
-		
-		public void paintComponent(Graphics g){
-			/*ImageIcon ship_up = new ImageIcon ("ship_up.png");
-			ImageIcon ship_down = new ImageIcon ("ship_down.png");
-			ImageIcon ship_left = new ImageIcon ("ship_left.png");
-			ImageIcon ship_right = new ImageIcon ("ship_right.png");*/
-				super.paintComponent(g);
-				setBackground(Color.GREEN);
-				Graphics2D g2 = (Graphics2D) g;
-				//ship1 = new ImageIcon("ship_up.png");
-				g2.fill(new Ellipse2D.Double(x,y,40,40));
-			/*	Point cP = state.getImagePosition();
-				int code = e.getKeyCode();
-				if(code == KeyEvent.VK_UP){
-					ship_up.paintIcon(this,g,cP.x,cP.y);
-				}
-				if(code == KeyEvent.VK_DOWN){
-					ship_down.paintIcon(this,g,cP.x,cP.y);
-				}
-				if(code == KeyEvent.VK_LEFT){
-					ship_left.paintIcon(this,g,cP.x,cP.y);
-				}
-				if(code == KeyEvent.VK_RIGHT){
-					ship_right.paintIcon(this,g,cP.x,cP.y);
-				}*/
+		if (arg0.getKeyCode() == KeyEvent.VK_UP){
+			p.setY(p.getY()-yBuffer);
+			System.out.println(p.getY() + "," + p.getX());
+			gui.callRepaint();
 		}
-		public void actionPerformed(ActionEvent e){
-			repaint();
-			x += velx;
-			y += vely;
+		if (arg0.getKeyCode() == KeyEvent.VK_LEFT){
+			p.setX(p.getX()-xBuffer);
+			System.out.println(p.getY() + "," + p.getX());
+			gui.callRepaint();
 		}
-		public void up(){
-			vely = -1.5;
-			velx = 0;
-		}
-		public void down(){
-			vely = 1.5;
-			velx = 0;
-		}
-		public void left(){
-			velx = -1.5;
-			vely =  0;
-		}
-		public void right(){
-			velx = 1.5;
-			vely = 0; 
-		}
-		/*-------------------------------------------
-		public void up_right(){
-			vely = -1.5;
-			velx = 1.5;	
-		}  
-		public void up_left(){
-			vely = -1.5;
-			velx = -1.5;
-		}
-		public void down_right(){
-			velx = 1.5;
-			vely = 1.5;
-		}
-		public void down_left(){
-			velx = -1.5;
-			vely = 1.5;
-		}
-		-----------------------------------------------*/
-		public void keyPressed(KeyEvent e){
-			int code = e.getKeyCode();
-			if (code == KeyEvent.VK_UP){
-				up();
-			}
-			if (code == KeyEvent.VK_DOWN){
-				down();
-			}
-			if (code == KeyEvent.VK_LEFT){
-				left();
-			}
-			if (code == KeyEvent.VK_RIGHT){
-				right();
-			}
-			/*---------------------------------------
-			if (code == KeyEvent.VK_UP && code == KeyEvent.VK_RIGHT){
-				up_right();
-			}
-			if (code == KeyEvent.VK_UP && code == KeyEvent.VK_LEFT){
-				up_left();
-			}
-			if (code == KeyEvent.VK_DOWN && code == KeyEvent.VK_RIGHT){
-				down_right();
-			}
-			if (code == KeyEvent.VK_DOWN && code == KeyEvent.VK_LEFT){
-				down_left();
-			}
-			-------------------------------------------*/
-		}
-		public void keyTyped(KeyEvent e){}
-		public void keyReleased(KeyEvent e) {
-		int code = e.getKeyCode();
-			if (code==KeyEvent.VK_RIGHT||code==KeyEvent.VK_LEFT){
-				velx = 0;
-			}
-			if (code==KeyEvent.VK_UP||code==KeyEvent.VK_DOWN){
-				vely = 0;
-			}
-			/*--------------------------------------------
-			if (code == KeyEvent.VK_UP && code == KeyEvent.VK_RIGHT){
-				velx = 0;
-				vely = 0;
-			}
-			if (code == KeyEvent.VK_UP && code == KeyEvent.VK_LEFT){
-				velx = 0;
-				vely = 0;
-			}
-			if (code == KeyEvent.VK_DOWN && code == KeyEvent.VK_RIGHT){
-				velx = 0;
-				vely = 0;
-			}
-			if (code == KeyEvent.VK_DOWN && code == KeyEvent.VK_LEFT){
-				velx = 0;
-				vely = 0;
-			}
-			-----------------------------------------------*/
+		if (arg0.getKeyCode() == KeyEvent.VK_RIGHT){
+			p.setX(p.getX()+xBuffer);
+			System.out.println(p.getY() + "," + p.getX());
+			gui.callRepaint();
 		}
 	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
+}

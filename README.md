@@ -1,6 +1,4 @@
 # group-project-cs3
 Time to git gud.
 
-In all seriousness though, this is a game being made for a CS3 class.
-
-That means we need to figure out what we do.
+Alright! I stayed during my off period and got this red square to hop from tile to tile. Had to add another class, Player. Next up, collisions with walls. 
