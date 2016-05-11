@@ -4,23 +4,14 @@ public class Collider {
 	
 	int x;
 	int y;
+	String name;
 	
 	public Collider (int _x, int _y){
 		x = _x;
 		y = _y;
+		name = "DEFAULT";
 	}
-	
-	public boolean isCollision(int _x, int _y, List<Collider> colliders){
-		
-		for (int x = 0; x < colliders.size(); x++){
-			if (_x == colliders.get(x).getX() && _y == colliders.get(x).getY()){
-				System.out.println("Collision at " + _x + "," + _y);
-				return true;
-			}
-		}
-		return false;
-	}
-	
+
 	public int getX(){
 		return x;
 	}
@@ -33,5 +24,18 @@ public class Collider {
 	public void setY(int _y){
 		y = _y;
 	}
+
+	//GENERIC COLLISION
+	public boolean playerCollision(Player p, int key, List<Collider> colliders, OurKeyListener ourKeyListener) {
+		System.out.println("DEFAULT COLLIDER HIT PLAYER");
+		//if true, stop moving
+		return false;
+	}
+	
+	public String name(){
+		return name;
+	}
+	
+	
 	
 }
