@@ -1,8 +1,6 @@
 
 public class Player {
 	
-	//THIS XY COORDS IS FOR GRID
-	//WHEN USING COMPARE, MULTIPLY X BY XBUFFER AND Y BY YBUFFER
 	int x;
 	int y;
 	
