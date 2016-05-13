@@ -16,6 +16,7 @@ public class GUI {
 	int gridSize;
 	OurKeyListener gui_kList;
 	Player play;
+	Enemy enemy;
 	int xBuffer;
 	int yBuffer;
 	
@@ -40,6 +41,7 @@ public class GUI {
 		yBuffer = (f.getHeight())/(gridSize-1);
 
 		play = new Player(Math.round(gridSize/2),Math.round(gridSize/2));
+		enemy = new Enemy(Math.round(gridSize/2),Math.round(gridSize/2));
 		gui_kList = new OurKeyListener(play, this, gridSize);
 		gameOver = new JLabel("WINNER");
 		gameOver.setFont(new Font("Verdana", 1, 20));;
@@ -103,8 +105,12 @@ public class GUI {
 				g.setColor(Color.RED);
 				g.fillRect(play.getX()*xBuffer, play.getY()*yBuffer, xBuffer, yBuffer);
 				//Player Above
-
 				
+				//Enemy Below
+				g.setColor(Color.BLUE);
+				g.fillRect(enemy.getX()*xBuffer, enemy.getY()*yBuffer, xBuffer, yBuffer);
+				//Enemy Above
+
 				//Walls Below
 				g.setColor(Color.BLACK);
 				for (int x = 0; x < gridSize; x++){
@@ -139,6 +145,5 @@ public class GUI {
 	public void updateColliders(List<List<Collider>> _colliders){
 		colliders = _colliders;
 	}
-	
 	
 }
