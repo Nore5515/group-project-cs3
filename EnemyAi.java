@@ -27,32 +27,14 @@ public class EnemyAi implements KeyListener{
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		updateMovement();
-		/*if (arg0.getKeyCode() == KeyEvent.VK_DOWN){
-			collided = isCollision(p.getX()*xBuffer, (p.getY()+1)*yBuffer, gui.getColliders(), p, KeyEvent.VK_DOWN);
-			if (!collided){
-				movePlayer(0,1);
-			}
-		}
-		if (arg0.getKeyCode() == KeyEvent.VK_UP){
-			collided = isCollision(p.getX()*xBuffer, (p.getY()-1)*yBuffer, gui.getColliders(), p, KeyEvent.VK_UP);
-			if (!collided){
-				movePlayer(0,-1);
-			}
-		}
-		if (arg0.getKeyCode() == KeyEvent.VK_LEFT){
-			collided = isCollision((p.getX()-1)*xBuffer, p.getY()*yBuffer, gui.getColliders(), p, KeyEvent.VK_LEFT);
-			if (!collided){
-				movePlayer(-1,0);
-			}
-		}
-		if (arg0.getKeyCode() == KeyEvent.VK_RIGHT){
-			collided = isCollision((p.getX()+1)*xBuffer, p.getY()*yBuffer, gui.getColliders(), p, KeyEvent.VK_RIGHT);
-			if (!collided){
-				movePlayer(1,0);
-			}
-		}*/
 		if(arg0.getKeyCode() == KeyEvent.VK_DOWN||arg0.getKeyCode() == KeyEvent.VK_UP||arg0.getKeyCode() == KeyEvent.VK_LEFT||arg0.getKeyCode() == KeyEvent.VK_RIGHT){
-			moveEnemy(1,0);
+			collided = isCollision(e.getX()*xBuffer, (e.getY()+1)*yBuffer, gui.getColliders(), e, KeyEvent.VK_DOWN);
+			collided = isCollision(e.getX()*xBuffer, (e.getY()-1)*yBuffer, gui.getColliders(), e, KeyEvent.VK_UP);
+			collided = isCollision((e.getX()-1)*xBuffer, e.getY()*yBuffer, gui.getColliders(), e, KeyEvent.VK_LEFT);
+			collided = isCollision((e.getX()+1)*xBuffer, e.getY()*yBuffer, gui.getColliders(), e, KeyEvent.VK_RIGHT);
+			if(!collided){
+				moveEnemy(1,0);
+			}
 		}
 		
 		gui.callRepaint();
@@ -75,7 +57,7 @@ public class EnemyAi implements KeyListener{
 	public void moveEnemy(int x, int y){
 		e.setX(e.getX()+x);
 		e.setY(e.getY()+y);
-		gui.updateEnemy(e.getX(),e.getY());
+		//gui.updateEnemy(e.getX(),e.getY());
 	}
 	
 	

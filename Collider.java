@@ -31,12 +31,11 @@ public class Collider {
 		//if true, stop moving
 		return false;
 	}
-	public boolean enemyCollision(Enemy e, int key, List<List<Collider>> colliders, EnemyAi eneai){
-			System.out.println("DEFAULT ENEMY HIT PLAYER");
-			//if true, stop moving
-			return false;
-		}
-	
+	public boolean enemyCollision(Enemy e, int key, List<List<Collider>> colliders, EnemyAi enemyai) {
+		System.out.println("DEFAULT COLLIDER HIT PLAYER");
+		//if true, stop moving
+		return false;
+	}
 	public String name(){
 		return name;
 	}

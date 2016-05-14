@@ -15,6 +15,7 @@ public class GUI {
 	JLabel gameOver;
 	int gridSize;
 	OurKeyListener gui_kList;
+	EnemyAi gui_eList;
 	Player play;
 	Enemy enemy;
 	int xBuffer;
@@ -43,6 +44,7 @@ public class GUI {
 		play = new Player(Math.round(gridSize/2),Math.round(gridSize/2));
 		enemy = new Enemy(Math.round(gridSize/2),Math.round(gridSize/2));
 		gui_kList = new OurKeyListener(play, this, gridSize);
+		gui_eList = new EnemyAi(enemy, this, gridSize);
 		gameOver = new JLabel("WINNER");
 		gameOver.setFont(new Font("Verdana", 1, 20));;
 
@@ -61,8 +63,7 @@ public class GUI {
 			walls.add(new Wall(0, x*yBuffer));
 			walls.add(new Wall(x*xBuffer, yBuffer*(gridSize-3)));
 			walls.add(new Wall(xBuffer*(gridSize-2), x*yBuffer));
-		}
-		
+		}	
 		//Adds Coins to List
 		coins.add(new Collectable(7*xBuffer, 7*yBuffer));
 		for (int x = 3; x < 9; x++){
@@ -108,7 +109,7 @@ public class GUI {
 				
 				//Enemy Below
 				g.setColor(Color.BLUE);
-				g.fillRect(enemy.getX()*xBuffer, enemy.getY()*yBuffer, xBuffer, yBuffer);
+				g.fillRect(enemy.getX()*xBuffer/*-(3*xBuffer)*/, enemy.getY()*yBuffer/*-(3*yBuffer)*/, xBuffer, yBuffer);
 				//Enemy Above
 
 				//Walls Below
@@ -125,6 +126,7 @@ public class GUI {
 			//Above is Panel Painting
 		};
 		f.addKeyListener(gui_kList);
+		f.addKeyListener(gui_eList);
 		f.add(p);
 	}
 	

@@ -17,6 +17,12 @@ public class Wall extends Collider{
 		//if true, stop moving
 		return true;
 	}
+	public boolean enemyCollision(Enemy e, int key, List<List<Collider>> colliders, EnemyAi enemyai){
+		System.out.println("WALL COLLISION WITH ENEMY");
+		
+		//if true, stop moving
+		return true;
+	}
 	
 	public String name(){
 		return name;

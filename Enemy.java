@@ -10,7 +10,8 @@ public class Enemy extends Collider{
 		y = _y;
 	}
 	
-	public void updateEnemy(Enemy){
-		
-	}	
+	//public void updateEnemy(Enemy){
+	//	xBuffer = (gui.getFrame().getWidth())/(gridSize-1);
+	//	yBuffer = (gui.getFrame().getHeight())/(gridSize-1);
+//	}
 }
