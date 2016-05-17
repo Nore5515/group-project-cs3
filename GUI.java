@@ -2,6 +2,8 @@
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.List;
@@ -12,10 +14,12 @@ import javax.swing.*;
 
 public class GUI {
 	
+	protected static final Component JLabel = null;
 	JFrame f;
 	JPanel p;
 	JPanel transition;
 	JPanel inventoryScreen;
+	JPanel statusScreen;
 	JLabel gameOver;
 	int gridSize;
 	OurKeyListener gui_kList;
@@ -62,18 +66,17 @@ public class GUI {
 		};
 		//Set up transition screen ABOVE
 		
+		
+		inventory = new ArrayList<String>();
+		inventory.add("a) Torch");
+		inventory.add("b) Red Potion");
+		inventory.add("c) Blue Potion");
+		
 		//Set up Inventory screen BELOW
-		inventoryScreen = new JPanel(){
-			public void paintComponent(Graphics g){
-				super.paintComponent(g) ;
-				this.setBackground(Color.YELLOW);
-				for (int x = 0; x < inventory.size(); x++){
-					f.add(new JLabel(inventory.get(x)));
-					System.out.println(inventory.get(x));
-				}
-			}
-		};
+		InventoryScreen inventoryScreen = new InventoryScreen(inventory);
 		//Set up Inventory screen Above
+		
+		
 		
 		gridSize = _gridSize;
 		xBuffer = (f.getWidth())/(gridSize-1);
@@ -100,6 +103,19 @@ public class GUI {
 		colliders.add(exits);
 		//Item 3
 		colliders.add(doors);
+		
+		//Status Screen
+		statusScreen = new JPanel(){
+			
+			public void paintComponent(Graphics g){
+				super.paintComponent(g) ;
+				this.setBackground(Color.LIGHT_GRAY);
+				System.out.println("Update Status");
+				g.setFont(new Font("Arial", 0, 20));
+				g.drawString(("X: " + (play.getX() - 1)), 10, 20);
+				g.drawString(("Y: " + (play.getY() - 1)), 10, 40);
+			}
+		};
 		
 		//Adds Walls
 		updateWalls();
@@ -181,8 +197,12 @@ public class GUI {
 			//Above is Panel Painting
 			
 		};
+		inventoryScreen.setPreferredSize(new Dimension(40,100));
+		statusScreen.setPreferredSize(new Dimension(40,100));
 		f.addKeyListener(gui_kList);
-		f.add(p);
+		f.add(p, BorderLayout.CENTER);
+		f.add(inventoryScreen, BorderLayout.PAGE_END);
+		f.add(statusScreen,BorderLayout.PAGE_END);
 	}
 	
 	public JFrame getFrame(){
@@ -195,7 +215,7 @@ public class GUI {
 			for (int x = 0; x < gridSize; x++){
 				walls.add(new Wall(x*xBuffer, 0));
 				walls.add(new Wall(0, x*yBuffer));
-				walls.add(new Wall(x*xBuffer, yBuffer*(gridSize-3)));
+				walls.add(new Wall(x*xBuffer, yBuffer*(13)));
 				walls.add(new Wall(xBuffer*(gridSize-2), x*yBuffer));
 			}
 		}
@@ -203,7 +223,7 @@ public class GUI {
 			for (int x = 0; x < gridSize; x++){
 				walls.add(new Wall(x*xBuffer, 0));
 				walls.add(new Wall(0, x*yBuffer));
-				walls.add(new Wall(x*xBuffer, yBuffer*(gridSize-3)));
+				walls.add(new Wall(x*xBuffer, yBuffer*(13)));
 				walls.add(new Wall(xBuffer*(gridSize-2), x*yBuffer));
 			}
 			/*for (int x = 0; x < gridSize; x++){
@@ -239,14 +259,22 @@ public class GUI {
 	
 	public void callRepaint() {
 		// TODO Auto-generated method stub
+		statusScreen.repaint();
+		statusScreen.revalidate();
+		//statusScreen.add(new JLabel("X: " + play.getX()));
+		//statusScreen.add(new JLabel("Y: " + play.getY()));
+		//statusScreen.validate();
+		
+		
 		p.repaint();
+		f.revalidate();
 	}
 	
 	public void nextLevel(){
 		level++;
 		f.remove(p);
-		f.add(inventoryScreen);
-		inventoryScreen.repaint();
+		//f.add(inventoryScreen);
+		//inventoryScreen.repaint();
 		f.pack();
 		f.resize(500, 500);
 		try{
@@ -254,7 +282,7 @@ public class GUI {
 		}
 		catch(InterruptedException ex){
 		}
-		f.remove(inventoryScreen);
+		//f.remove(inventoryScreen);
 		f.add(p);
 		System.out.println("LEVEL " + level);
 		updateWalls();
