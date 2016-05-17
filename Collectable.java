@@ -11,13 +11,28 @@ public class Collectable extends Collider{
 		
 		x = _x;
 		y = _y;
-		name = "COIN";
+		name = "Coin";
 		// TODO Auto-generated constructor stub
 	}
 	
 	public boolean playerCollision(Player p, int key, List<List<Collider>> colliders, OurKeyListener ourKeyListener){
 		System.out.println("COIN COLLISION WITH PLAYER");
 		
+		ourKeyListener.getGUI().addItem(name);
+		
+		removeSelf(colliders);
+		
+		ourKeyListener.updateColliders(colliders);
+		ourKeyListener.getGUI().updateColliders(colliders);
+		//if true, stop moving
+		return false;
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	public void removeSelf(List<List<Collider>> colliders){
 		int index = -1;
 		for (int i = 0; i < colliders.get(0).size(); i++){
 			System.out.println("Does " + x + "="+colliders.get(0).get(i).getX()+" as well as " + y + "=" + colliders.get(0).get(i).getY());
@@ -27,15 +42,6 @@ public class Collectable extends Collider{
 		}
 		colliders.get(0).remove(index);
 		System.out.println("Collider Removed!");
-		
-		ourKeyListener.updateColliders(colliders);
-		ourKeyListener.getGUI().updateColliders(colliders);
-		//if true, stop moving
-		return false;
-	}
-	
-	public String name(){
-		return name;
 	}
 	
 	
