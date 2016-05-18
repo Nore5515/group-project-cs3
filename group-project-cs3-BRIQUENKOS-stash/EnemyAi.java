@@ -36,7 +36,6 @@ public class EnemyAi implements KeyListener{
 			//collided = isCollision((e.getX()+1)*xBuffer, e.getY()*yBuffer, gui.getColliders(), e, KeyEvent.VK_RIGHT);
 			//if(!collided){
 				nextMove();
-			//}
 		}
 		
 		gui.callRepaint();
@@ -58,7 +57,6 @@ public class EnemyAi implements KeyListener{
 	public void nextMove(){			
 		int valX= p.getX()-e.getX();
 		int valY= p.getY()-e.getY();
-		//System.out.println("ValX:"+valX+". Valy:"+valY);
 		if (Math.abs(valX) < Math.abs(valY)){
 				if(valX < 0)
 					moveEnemy(-1,0);
@@ -69,10 +67,7 @@ public class EnemyAi implements KeyListener{
 						moveEnemy(0,-1);
 					else
 						moveEnemy(0,1);			
-				}
-				
-				
-				
+				}	
 			}
 		else if (Math.abs(valY) < Math.abs(valX)){
 				if(valY < 0)

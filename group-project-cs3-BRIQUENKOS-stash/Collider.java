@@ -32,7 +32,7 @@ public class Collider {
 		return false;
 	}
 	public boolean enemyCollision(Enemy e, int key, List<List<Collider>> colliders, EnemyAi enemyai) {
-		System.out.println("DEFAULT COLLIDER HIT PLAYER");
+		System.out.println("DEFAULT COLLIDER HIT ENEMY");
 		//if true, stop moving
 		return false;
 	}

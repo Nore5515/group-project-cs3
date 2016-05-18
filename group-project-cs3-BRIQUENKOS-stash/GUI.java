@@ -42,7 +42,7 @@ public class GUI {
 		yBuffer = (f.getHeight())/(gridSize-1);
 
 		play = new Player(Math.round(gridSize/2),Math.round(gridSize/2));
-		enemy = new Enemy(3,3);
+		enemy = new Enemy(1,1);
 		gui_kList = new OurKeyListener(play, this, gridSize);
 		gui_eList = new EnemyAi(play, enemy, this, gridSize);
 		gameOver = new JLabel("WINNER");
@@ -63,7 +63,10 @@ public class GUI {
 			walls.add(new Wall(0, x*yBuffer));
 			walls.add(new Wall(x*xBuffer, yBuffer*(gridSize-3)));
 			walls.add(new Wall(xBuffer*(gridSize-2), x*yBuffer));
-		}	
+		}
+		for(int jf = 1;jf < 4; jf++){walls.add(new Wall(jf*xBuffer,2*yBuffer));}
+		for(int jf2 = 3;jf2 < 6; jf2++){walls.add(new Wall(3*xBuffer,jf2*yBuffer));}
+		for(int jf3 = 1;jf3 <6; jf3++){walls.add(new Wall(5*xBuffer,jf3*yBuffer));}		
 		//Adds Coins to List
 		coins.add(new Collectable(7*xBuffer, 7*yBuffer));
 		for (int x = 3; x < 9; x++){
@@ -114,6 +117,9 @@ public class GUI {
 
 				//Walls Below
 				g.setColor(Color.BLACK);
+				for(int jf = 1;jf < 4; jf++){g.fillRect(jf*xBuffer,2*yBuffer,xBuffer,yBuffer);}
+				for(int jf2 = 3;jf2 < 6; jf2++){g.fillRect(3*xBuffer,jf2*yBuffer,xBuffer,yBuffer);}
+				for(int jf3 = 1;jf3 <6; jf3++){g.fillRect(5*xBuffer,jf3*yBuffer,xBuffer,yBuffer);}	
 				for (int x = 0; x < gridSize; x++){
 					g.fillRect(x*xBuffer, 0, xBuffer, yBuffer);
 					g.fillRect(0, x*yBuffer, xBuffer, yBuffer);
