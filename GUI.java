@@ -28,7 +28,9 @@ public class GUI {
 	int yBuffer;
 	int level;
 	int sightRange;
-	
+	int torchHealth;
+	boolean torchUsed;
+	boolean coinUsed;
 	
 	//List of all held items
 	List<String> inventory;
@@ -38,11 +40,13 @@ public class GUI {
 	//item 1
 	List<Collider> walls;
 	//item 0
-	List<Collider> coins;
+	List<Collider> items;
 	//item 2
 	List<Collider> exits;
 	//item 3
 	List<Collider> doors;
+	//item 4
+	List<Collider> bombs;
 
 	Random Rand = new Random();
 	
@@ -82,23 +86,27 @@ public class GUI {
 		gridSize = _gridSize;
 		xBuffer = (f.getWidth())/(gridSize-1);
 		yBuffer = (f.getHeight())/(gridSize-1);
+		
+		torchUsed = false;
+		torchHealth = 100;
+		coinUsed = false;
 
 		play = new Player(Math.round(gridSize/2),Math.round(gridSize/2));
 		gui_kList = new OurKeyListener(play, this, gridSize);
 		gameOver = new JLabel("WINNER");
 		gameOver.setFont(new Font("Verdana", 1, 20));;
 		level = 0;
-		sightRange = 5;
+		sightRange = 3;
 
 		inventory = new ArrayList<String>();
 		
 		colliders = new ArrayList<List<Collider>>();
-		coins = new ArrayList<Collider>();
+		items = new ArrayList<Collider>();
 		walls = new ArrayList<Collider>();
 		exits = new ArrayList<Collider>();
 		doors = new ArrayList<Collider>();
 		//Item 0
-		colliders.add(coins);
+		colliders.add(items);
 		//Item 1
 		colliders.add(walls);
 		//Item 2
@@ -113,23 +121,75 @@ public class GUI {
 				super.paintComponent(g) ;
 				this.setBackground(Color.LIGHT_GRAY);
 				
+				int numLists = 0;
 				
 				//Displays Coords
 				g.setFont(new Font("Arial", 0, 20));
-				g.drawString(("X: " + (play.getX() - 1)), 10, 20);
-				g.drawString(("Y: " + (play.getY() - 1)), 10, 40);
+				g.drawString("HP: " + play.hp + "/" + play.maxHP, 10, 20);
 				
 				//Lists for Stackable Items (ex. Potions, Coins, etc)
 				List<String> Coins = new ArrayList<String>();
+				List<String> Torches = new ArrayList<String>();
+				
+				List<Command> commandItems = new ArrayList<Command>();
 				
 				//Adds items to Stackable Items lists
 				for(int x = 0; x < inventory.size(); x++){
 					if (inventory.get(x).compareTo("Coin") == 0){
 						Coins.add(inventory.get(x));
 					}
+					if (inventory.get(x).compareTo("Torch") == 0){
+						Torches.add(inventory.get(x));
+					}
 					
 				}
-				g.drawString("Coins: " +Coins.size(), 100, 20);
+				
+				if (Coins.size() != 0){
+					g.drawString(String.valueOf((char)(numLists+65)) + ") Coins: " +Coins.size(), 120, 20*(numLists+1));
+					numLists++;
+					commandItems.add(new Command("Coin", String.valueOf((char)(numLists+64)), getGUI()));
+				}
+				Command c = null;
+				if (Torches.size() > 0){
+					g.drawString(String.valueOf((char)(numLists+65)) + ") Torches: " + Torches.size(), 120,20*(numLists+1));
+					g.drawString("Torch Life: " + torchHealth, 270, 20*(numLists+1));
+					numLists++;
+					commandItems.add(c = new Command("Torch", String.valueOf((char)(numLists+64)), getGUI()));
+					
+				}
+				
+				//if torch is being used...
+				if (torchUsed){
+					torchHealth--;
+					if (torchHealth <= 0){
+						System.out.println("Your torch fizzles out..");
+						torchUsed = false;
+						inventory.remove("Torch");
+						//commandItems.remove(c);
+						System.out.println(Torches.size());
+						numLists--;
+						torchHealth = 100;
+						this.revalidate();
+					}
+					else{
+						sightRange = 5;
+					}
+				}
+				else{
+					sightRange = 2;
+				}
+				
+				if (coinUsed){
+					inventory.remove("Coin");
+					numLists--;
+					this.revalidate();
+					coinUsed = !coinUsed;
+				}
+				
+				gui_kList.updateCommands(commandItems);
+				
+				
+				
 				
 				
 			}
@@ -139,12 +199,14 @@ public class GUI {
 		updateWalls();
 		
 		//Adds Coins to List
-		coins.add(new Collectable(7*xBuffer, 7*yBuffer));
-		for (int x = 6; x < 9; x++){
-			if (Rand.nextInt(3) == 0){
-				coins.add(new Collectable(x*xBuffer,x*yBuffer));
-			}
+		if (level == 0){
+			items.add(new Collectable(1*xBuffer,3*yBuffer, "Coin"));
+			items.add(new Collectable(2*xBuffer,10*yBuffer, "Coin"));
+			items.add(new Collectable(7*xBuffer, 3*yBuffer, "Torch"));
+			items.add(new Collectable(2*xBuffer, 8*yBuffer, "Torch"));
 		}
+		
+		
 		
 		//Adds Exit
 		updateExits();
@@ -189,8 +251,9 @@ public class GUI {
 				//Draws coins Above
 				
 				
+				
 				//Draws Exit Below
-				g.setColor(Color.GRAY);
+				g.setColor(Color.GREEN);
 				for (int x = 0; x < colliders.get(2).size(); x++){
 					g.fillRect(colliders.get(2).get(x).getX(), colliders.get(2).get(x).getY(), xBuffer, yBuffer);
 				}
@@ -213,7 +276,7 @@ public class GUI {
 				
 				
 				//Walls Drawn Below
-				g.setColor(Color.BLACK);
+				g.setColor(Color.gray);
 				for (int x = 0; x < colliders.get(1).size(); x++){
 					g.fillRect(colliders.get(1).get(x).getX(), colliders.get(1).get(x).getY(), xBuffer, yBuffer);
 				}
@@ -221,10 +284,10 @@ public class GUI {
 				
 				
 				//Shadows Below
-				g.setColor(Color.gray);
+				g.setColor(Color.BLACK);
 				for (int x = 0; x < gridSize*2; x++){
 					for (int y = 0; y < gridSize*2; y++){
-						if (Math.abs(x-play.getX()) > 3 || Math.abs(y-play.getY()) > 3){
+						if (Math.abs(x-play.getX()) > sightRange || Math.abs(y-play.getY()) > sightRange){
 							g.fillRect(x*xBuffer, y*yBuffer, xBuffer, yBuffer);
 						}
 					}
@@ -245,6 +308,10 @@ public class GUI {
 		f.add(statusScreen,BorderLayout.PAGE_END);
 	}
 	
+	public GUI getGUI(){
+		return this;
+	}
+	
 	public JFrame getFrame(){
 		return f;
 	}
@@ -252,6 +319,111 @@ public class GUI {
 	public void updateWalls(){
 		walls.clear();
 		if (level == 0){
+			for (int x = 0; x < gridSize; x++){
+				walls.add(new Wall(x*xBuffer, 0));
+				walls.add(new Wall(0, x*yBuffer));
+				walls.add(new Wall(x*xBuffer, yBuffer*(13)));
+				walls.add(new Wall(xBuffer*(gridSize-2), x*yBuffer));
+			}
+			play.setX(1);
+			play.setY(1);
+			addWall(walls,1,2);
+			addWall(walls,2,2);
+			addWall(walls,3,2);
+			addWall(walls,5,2);
+			addWall(walls,6,2);
+			addWall(walls,7,2);
+			addWall(walls,8,2);
+			addWall(walls,8,1);
+			addWall(walls,8,3);
+			addWall(walls,1,4);
+			addWall(walls,2,4);
+			addWall(walls,3,4);
+			addWall(walls,5,4);
+			addWall(walls,6,4);
+			addWall(walls,7,4);
+			addWall(walls,8,4);
+			addWall(walls,1,5);
+			addWall(walls,3,5);
+			addWall(walls,5,5);
+			addWall(walls,5,6);
+			addWall(walls,5,7);
+			addWall(walls,5,8);
+			addWall(walls,5,9);
+			addWall(walls,5,10);
+			addWall(walls,5,11);
+			addWall(walls,6,5);
+			addWall(walls,6,6);
+			addWall(walls,6,7);
+			addWall(walls,6,8);
+			addWall(walls,6,9);
+			addWall(walls,6,10);
+			addWall(walls,6,11);
+			addWall(walls,9,1);
+			addWall(walls,9,2);
+			addWall(walls,9,3);
+			addWall(walls,10,1);
+			addWall(walls,10,2);
+			addWall(walls,10,3);
+			addWall(walls,11,1);
+			addWall(walls,11,2);
+			addWall(walls,11,3);
+			addWall(walls,8,4);
+			addWall(walls,9,4);
+			addWall(walls,8,12);
+			addWall(walls,8,11);
+			addWall(walls,8,10);
+			addWall(walls,8,9);
+			addWall(walls,9,12);
+			addWall(walls,9,11);
+			addWall(walls,9,10);
+			addWall(walls,9,9);
+			addWall(walls,11,5);
+			addWall(walls,11,8);
+			addWall(walls,11,9);
+			addWall(walls,11,10);
+			addWall(walls,11,11);
+			addWall(walls,11,4);
+			addWall(walls,10,10);
+			addWall(walls,10,11);
+			addWall(walls,10,12);
+			addWall(walls,12,1);
+			addWall(walls,13,1);
+			addWall(walls,14,1);
+			addWall(walls,15,1);
+			addWall(walls,16,1);
+			addWall(walls,17,1);
+			addWall(walls,17,2);
+			addWall(walls,17,3);
+			addWall(walls,17,4);
+			addWall(walls,17,5);
+			addWall(walls,17,6);
+			addWall(walls,17,7);
+			addWall(walls,17,8);
+			addWall(walls,17,9);
+			addWall(walls,17,10);
+			addWall(walls,17,11);
+			addWall(walls,17,12);
+			addWall(walls,16,12);
+			addWall(walls,15,12);
+			addWall(walls,14,12);
+			addWall(walls,13,12);
+			addWall(walls,12,12);
+			addWall(walls,11,12);
+		}
+		else if (level == 1){
+			addWall(walls,1,1);
+			addWall(walls,1,3);
+			addWall(walls,1,5);
+			addWall(walls,1,7);
+			addWall(walls,1,9);
+			addWall(walls,1,11);
+			walls.add(new Wall(xBuffer*3, yBuffer*4));
+			walls.add(new Wall(xBuffer*4, yBuffer*4));
+			walls.add(new Wall(xBuffer*5, yBuffer*4));
+			walls.add(new Wall(xBuffer*6, yBuffer*4));
+			walls.add(new Wall(xBuffer*7, yBuffer*4));
+			walls.add(new Wall(xBuffer*8, yBuffer*4));
 			for (int x = 0; x < gridSize; x++){
 				walls.add(new Wall(x*xBuffer, 0));
 				walls.add(new Wall(0, x*yBuffer));
@@ -280,21 +452,53 @@ public class GUI {
 	public void updateExits(){
 		exits.clear();
 		if (level == 0){
-			exits.add(new Exit(8*xBuffer, 8* yBuffer));
+			exits.add(new Exit(10*xBuffer, 4* yBuffer));
+			exits.add(new Exit(10*xBuffer, 9* yBuffer));
+			exits.add(new Exit(16*xBuffer, 2* yBuffer));
+			exits.add(new Exit(16*xBuffer, 3* yBuffer));
+			exits.add(new Exit(16*xBuffer, 4* yBuffer));
+			exits.add(new Exit(16*xBuffer, 5* yBuffer));
+			exits.add(new Exit(16*xBuffer, 6* yBuffer));
+			exits.add(new Exit(16*xBuffer, 7* yBuffer));
+			exits.add(new Exit(16*xBuffer, 8* yBuffer));
+			exits.add(new Exit(16*xBuffer, 9* yBuffer));
+			exits.add(new Exit(16*xBuffer, 10* yBuffer));
+			exits.add(new Exit(16*xBuffer, 11* yBuffer));
+		}
+		else if (level == 1){
+			exits.add(new Exit(xBuffer*9, yBuffer*3));
 		}
 		else{
 			exits.add(new Exit((level*2)*xBuffer, (level*2*yBuffer)));
 		}
 	}
 	
+	public void toggleTorch(){
+		torchUsed = !torchUsed;
+	}
+	
 	public void updateDoors(){
 		doors.clear();
 		if (level == 0){
-			doors.add(new Door(level*6*xBuffer,level*6*yBuffer));
+			addDoor(doors, 3,1);
+			addDoor(doors,5,1);
+			addDoor(doors,3,3);
+			addDoor(doors,5,3);
+			addDoor(doors,4,4);
+			addDoor(doors,5,12);
+			addDoor(doors,11,6);
+			addDoor(doors,11,7);
 		}
 		else{
 			doors.add(new Door(level*1*xBuffer,level*1*yBuffer));
 		}
+	}
+	
+	public void addWall(List<Collider> wall, int x, int y){
+		wall.add(new Wall(x*xBuffer, y*yBuffer));
+	}
+	public void addDoor(List<Collider> door, int x, int y){
+		door.add(new Door(x*xBuffer,y*yBuffer));
 	}
 	
 	public void callRepaint() {
@@ -304,7 +508,6 @@ public class GUI {
 		//statusScreen.add(new JLabel("X: " + play.getX()));
 		//statusScreen.add(new JLabel("Y: " + play.getY()));
 		//statusScreen.validate();
-		
 		
 		p.repaint();
 		f.revalidate();
@@ -324,9 +527,25 @@ public class GUI {
 		}
 		//f.remove(inventoryScreen);
 		f.add(p);
-		for (int x = 0; x < 5; x++){
-			if (Rand.nextInt(2) == 0){
-				coins.add(new Collectable(x*xBuffer, x*yBuffer));
+		if (level == 1){
+			for (int x = 5; x < 10; x++){
+				for (int y = 5; y < 10; y++){
+					if (x == 5 || x == 9 || y == 5 || y == 9){
+						items.add(new Collectable(x*xBuffer, y*yBuffer, "Coin"));
+					}
+				}
+			}
+			items.add(new Collectable(6*xBuffer, 6*yBuffer, "Bomb"));
+		}
+		else if (level == 0){
+			items.add(new Collectable(2,10,"Coin"));
+			items.add(new Collectable(1,3,"Coin"));
+		}
+		else{
+			for (int x = 0; x < 5; x++){
+				if (Rand.nextInt(2) == 0){
+					items.add(new Collectable(5*xBuffer, x*yBuffer, "Coin"));
+				}
 			}
 		}
 		System.out.println("LEVEL " + level);
@@ -338,12 +557,19 @@ public class GUI {
 
 	
 	public List<List<Collider>> getColliders() {
-		// TODO Auto-generated method stub
 		return colliders;
 	}
 	
 	public void updateColliders(List<List<Collider>> _colliders){
 		colliders = _colliders;
+	}
+
+	public void toggleBomb() {
+		
+	}
+
+	public void toggleCoin() {
+		coinUsed = !coinUsed;
 	}
 	
 	

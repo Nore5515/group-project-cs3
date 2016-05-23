@@ -6,17 +6,17 @@ public class Collectable extends Collider{
 	int y;
 	String name;
 	
-	public Collectable(int _x, int _y) {
+	public Collectable(int _x, int _y, String _name) {
 		super(_x, _y);
 		
 		x = _x;
 		y = _y;
-		name = "Coin";
+		name = _name;
 		// TODO Auto-generated constructor stub
 	}
 	
 	public boolean playerCollision(Player p, int key, List<List<Collider>> colliders, OurKeyListener ourKeyListener){
-		System.out.println("COIN COLLISION WITH PLAYER");
+		System.out.println("OBJECT COLLISION WITH PLAYER");
 		
 		ourKeyListener.getGUI().addItem(name);
 		
@@ -25,6 +25,7 @@ public class Collectable extends Collider{
 		ourKeyListener.updateColliders(colliders);
 		ourKeyListener.getGUI().updateColliders(colliders);
 		//if true, stop moving
+		
 		return false;
 	}
 	
@@ -35,7 +36,7 @@ public class Collectable extends Collider{
 	public void removeSelf(List<List<Collider>> colliders){
 		int index = -1;
 		for (int i = 0; i < colliders.get(0).size(); i++){
-			System.out.println("Does " + x + "="+colliders.get(0).get(i).getX()+" as well as " + y + "=" + colliders.get(0).get(i).getY());
+			//System.out.println("Does " + x + "="+colliders.get(0).get(i).getX()+" as well as " + y + "=" + colliders.get(0).get(i).getY());
 			if (x == colliders.get(0).get(i).getX() && y == colliders.get(0).get(i).getY()){
 				index = i;
 			}
@@ -43,6 +44,7 @@ public class Collectable extends Collider{
 		colliders.get(0).remove(index);
 		System.out.println("Collider Removed!");
 	}
+	
 	
 	
 	

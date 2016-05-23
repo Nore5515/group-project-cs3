@@ -28,6 +28,8 @@ public class Collider {
 	//GENERIC COLLISION
 	public boolean playerCollision(Player p, int key, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
 		System.out.println("DEFAULT COLLIDER HIT PLAYER");
+		
+		
 		//if true, stop moving
 		return false;
 	}

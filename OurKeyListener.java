@@ -1,5 +1,6 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
@@ -13,6 +14,7 @@ public class OurKeyListener implements KeyListener{
 	int yBuffer;
 	boolean collided;
 	List<List<Collider>> colliders;
+	List<Command> commands;
 	
 	public OurKeyListener(Player _p, GUI _gui, int _gridSize){
 		p = _p;
@@ -21,6 +23,7 @@ public class OurKeyListener implements KeyListener{
 		xBuffer = (gui.getFrame().getWidth())/(gridSize-1);
 		yBuffer = (gui.getFrame().getHeight())/(gridSize-1);
 		collided = false;
+		commands = new ArrayList<Command>();
 	}
 	
 	@Override
@@ -49,6 +52,13 @@ public class OurKeyListener implements KeyListener{
 			collided = isCollision((p.getX()+1)*xBuffer, p.getY()*yBuffer, gui.getColliders(), p, KeyEvent.VK_RIGHT);
 			if (!collided){
 				movePlayer(1,0);
+			}
+		}
+		
+		for (int i = 0; i < commands.size(); i++){
+			//System.out.println("Does " + arg0.toString().substring(55, 56) + "==" + commands.get(i).getCommand());
+			if (arg0.toString().substring(55, 56).compareTo(commands.get(i).getCommand()) == 0){
+				commands.get(i).activate();
 			}
 		}
 		
@@ -94,6 +104,10 @@ public class OurKeyListener implements KeyListener{
 
 	public void updateColliders(List<List<Collider>> _colliders) {
 		colliders = _colliders;
+	}
+	
+	public void updateCommands(List<Command> _commands){
+		commands = _commands;
 	}
 
 	public GUI getGUI(){
