@@ -82,6 +82,7 @@ public class OurKeyListener implements KeyListener{
 	public void movePlayer(int x, int y){
 		p.setX(p.getX()+x);
 		p.setY(p.getY()+y);
+
 	}
 	
 	

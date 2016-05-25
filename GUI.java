@@ -23,7 +23,9 @@ public class GUI {
 	JLabel gameOver;
 	int gridSize;
 	OurKeyListener gui_kList;
+	EnemyAi gui_eList;
 	Player play;
+	Enemy enemy;
 	int xBuffer;
 	int yBuffer;
 	int level;
@@ -47,6 +49,8 @@ public class GUI {
 	List<Collider> doors;
 	//item 4
 	List<Collider> bombs;
+	//enemy 1
+	List<Collider> enemy1;
 
 	Random Rand = new Random();
 	
@@ -92,7 +96,10 @@ public class GUI {
 		coinUsed = false;
 
 		play = new Player(Math.round(gridSize/2),Math.round(gridSize/2));
+		enemy = new Enemy(2,6);
+		colliders = new ArrayList<List<Collider>>();
 		gui_kList = new OurKeyListener(play, this, gridSize);
+		gui_eList = new EnemyAi(play, enemy, this, colliders, gridSize);
 		gameOver = new JLabel("WINNER");
 		gameOver.setFont(new Font("Verdana", 1, 20));;
 		level = 0;
@@ -100,11 +107,12 @@ public class GUI {
 
 		inventory = new ArrayList<String>();
 		
-		colliders = new ArrayList<List<Collider>>();
+		
 		items = new ArrayList<Collider>();
 		walls = new ArrayList<Collider>();
 		exits = new ArrayList<Collider>();
 		doors = new ArrayList<Collider>();
+		enemy1 = new ArrayList<Collider>();
 		//Item 0
 		colliders.add(items);
 		//Item 1
@@ -113,6 +121,8 @@ public class GUI {
 		colliders.add(exits);
 		//Item 3
 		colliders.add(doors);
+		//Item 4
+		colliders.add(enemy1);
 		
 		//Status Screen
 		statusScreen = new JPanel(){
@@ -214,6 +224,9 @@ public class GUI {
 		//Adds Doors
 		updateDoors();
 		
+		//Adds Enemies
+		updateEnemies();
+		
 		p = new JPanel(){
 			//Below is Panel Painting
 			public void paintComponent(Graphics g){
@@ -270,9 +283,17 @@ public class GUI {
 				
 				
 				//Player Below
-				g.setColor(Color.RED);
+				g.setColor(Color.BLUE);
 				g.fillRect(play.getX()*xBuffer, play.getY()*yBuffer, xBuffer, yBuffer);
+				//System.out.println("Player position:"+play.getX()+","+play.getY());
 				//Player Above
+				
+				//Enemy Below
+				g.setColor(new Color(255,135,135));
+				for (int x = 0; x < colliders.get(4).size(); x++){
+					g.fillRect(colliders.get(4).get(x).getX(), colliders.get(4).get(x).getY(), xBuffer, yBuffer);
+				}
+				//Enemy Above
 				
 				
 				//Walls Drawn Below
@@ -283,7 +304,7 @@ public class GUI {
 				//Walls Drawn Above
 				
 				
-				//Shadows Below
+				/*Shadows Below
 				g.setColor(Color.BLACK);
 				for (int x = 0; x < gridSize*2; x++){
 					for (int y = 0; y < gridSize*2; y++){
@@ -292,7 +313,7 @@ public class GUI {
 						}
 					}
 				}
-				//Shadows Above
+				*//*Shadows Above*/
 				
 				
 				
@@ -303,6 +324,7 @@ public class GUI {
 		inventoryScreen.setPreferredSize(new Dimension(40,100));
 		statusScreen.setPreferredSize(new Dimension(40,100));
 		f.addKeyListener(gui_kList);
+		f.addKeyListener(gui_eList);
 		f.add(p, BorderLayout.CENTER);
 		f.add(inventoryScreen, BorderLayout.PAGE_END);
 		f.add(statusScreen,BorderLayout.PAGE_END);
@@ -493,12 +515,24 @@ public class GUI {
 			doors.add(new Door(level*1*xBuffer,level*1*yBuffer));
 		}
 	}
+	public void updateEnemies(){
+		enemy1.clear();
+		if (level == 0){
+			addEnemy(enemy1,2,6);		
+		}
+		else{
+			enemy1.add(new Enemy(level*1*xBuffer,level*1*yBuffer));
+		}
+	}
 	
 	public void addWall(List<Collider> wall, int x, int y){
 		wall.add(new Wall(x*xBuffer, y*yBuffer));
 	}
 	public void addDoor(List<Collider> door, int x, int y){
 		door.add(new Door(x*xBuffer,y*yBuffer));
+	}
+	public void addEnemy(List<Collider> enemy, int x, int y){
+		enemy1.add(new Enemy(x*xBuffer,y*yBuffer));
 	}
 	
 	public void callRepaint() {
@@ -552,8 +586,8 @@ public class GUI {
 		updateWalls();
 		updateDoors();
 		updateExits();
+		updateEnemies();
 	}
-	
 
 	
 	public List<List<Collider>> getColliders() {
