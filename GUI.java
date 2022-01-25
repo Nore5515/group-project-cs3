@@ -17,11 +17,11 @@ public class GUI {
 	JFrame f;
 	JPanel p;
 	JPanel transition;
-	JPanel inventoryScreen;
+	// JPanel inventoryScreen;
 	JPanel statusScreen;
 	JLabel gameOver;
 	int gridSize;
-	OurKeyListener gui_kList;
+	OurKeyListener guiKList;
 	Player play;
 	int xBuffer;
 	int yBuffer;
@@ -51,13 +51,13 @@ public class GUI {
 	// item 4
 	List<Collider> bombs;
 
-	Random Rand = new Random();
+	Random rand = new Random();
 
 	public GUI(int _gridSize) {
 		f = new JFrame();
 		f.setVisible(true);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// f.setDefaultCloseOperation(javax.swing.WindowConstants);
+		// f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		f.setSize(500, 500);
 		f.setLayout(new BorderLayout());
 
@@ -94,7 +94,7 @@ public class GUI {
 
 		play = new Player(gridSize / 2, gridSize / 2);
 		// play = new Player(Math.round(gridSize / 2), Math.round(gridSize / 2));
-		gui_kList = new OurKeyListener(play, this, gridSize);
+		guiKList = new OurKeyListener(play, this, gridSize);
 		gameOver = new JLabel("WINNER");
 		gameOver.setFont(new Font("Verdana", 1, 20));
 		level = 0;
@@ -173,7 +173,8 @@ public class GUI {
 						inventory.remove(TORCH);
 						// commandItems.remove(c);
 						System.out.println(Torches.size());
-						numLists--;
+						// numLists--;
+						// Not currently being used
 						torchHealth = 100;
 						this.revalidate();
 					} else {
@@ -185,12 +186,13 @@ public class GUI {
 
 				if (coinUsed) {
 					inventory.remove("Coin");
-					numLists--;
+					// numLists--;
+					// Not currently being used
 					this.revalidate();
 					coinUsed = !coinUsed;
 				}
 
-				gui_kList.updateCommands(commandItems);
+				guiKList.updateCommands(commandItems);
 
 			}
 		};
@@ -214,6 +216,7 @@ public class GUI {
 
 		p = new JPanel() {
 			// Below is Panel Painting
+			@Override
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
 
@@ -296,7 +299,7 @@ public class GUI {
 		};
 		inventoryScreen.setPreferredSize(new Dimension(40, 100));
 		statusScreen.setPreferredSize(new Dimension(40, 100));
-		f.addKeyListener(gui_kList);
+		f.addKeyListener(guiKList);
 		f.add(p, BorderLayout.CENTER);
 		f.add(inventoryScreen, BorderLayout.PAGE_END);
 		f.add(statusScreen, BorderLayout.PAGE_END);
@@ -494,7 +497,6 @@ public class GUI {
 	}
 
 	public void callRepaint() {
-		// TODO Auto-generated method stub
 		statusScreen.repaint();
 		statusScreen.revalidate();
 		// statusScreen.add(new JLabel("X: " + play.getX()));
@@ -534,7 +536,7 @@ public class GUI {
 			items.add(new Collectable(1, 3, "Coin"));
 		} else {
 			for (int x = 0; x < 5; x++) {
-				if (Rand.nextInt(2) == 0) {
+				if (rand.nextInt(2) == 0) {
 					items.add(new Collectable(5 * xBuffer, x * yBuffer, "Coin"));
 				}
 			}
