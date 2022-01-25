@@ -1,43 +1,49 @@
+import java.io.Serializable;
 
-public class Player {
-	
+public class Player implements Serializable {
+
 	int x;
 	int y;
 	int hp;
 	int maxHP;
-	
-	public Player (int _x, int _y){
+
+	public Player(int _x, int _y) {
 		x = _x;
 		y = _y;
 		maxHP = 10;
 		hp = maxHP;
 	}
-	
-	public int getX(){
+
+	public int getX() {
 		return x;
 	}
-	public int getY(){
+
+	public int getY() {
 		return y;
 	}
-	public int getHP(){
+
+	public int getHP() {
 		return hp;
 	}
-	public void setX(int _x){
+
+	public void setX(int _x) {
 		x = _x;
 	}
-	public void setY(int _y){
+
+	public void setY(int _y) {
 		y = _y;
 	}
-	//returns true if alive, false if ded
-	public boolean setHP(int _hp){
+
+	// returns true if alive, false if ded
+	public boolean setHP(int _hp) {
 		hp = _hp;
-		if (hp <= 0){
+		if (hp <= 0) {
 			return false;
 		}
-		if (hp > maxHP){
+		if (hp > maxHP) {
 			hp = maxHP;
 		}
 		return true;
 	}
-	
+
 }
