@@ -1,6 +1,6 @@
 
 // import java.awt.event.KeyEvent;
-import java.util.List;
+// import java.util.List;
 
 public class Wall extends Collider {
 
@@ -12,7 +12,11 @@ public class Wall extends Collider {
 	}
 
 	@Override
-	public boolean playerCollision(Player p, int key, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
+	// public boolean playerCollision(Player p, int key, List<List<Collider>>
+	// colliders, OurKeyListener ourKeyListener) {
+	// Oh this is so stupid i override it depending on the object...
+
+	public boolean playerCollision() {
 		System.out.println("WALL COLLISION WITH PLAYER");
 
 		// if true, stop moving

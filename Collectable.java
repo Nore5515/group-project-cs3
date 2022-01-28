@@ -14,20 +14,23 @@ public class Collectable extends Collider {
 		collectableName = _name;
 	}
 
-	@Override
-	public boolean playerCollision(Player p, int key, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
-		System.out.println("OBJECT COLLISION WITH PLAYER");
+	// @Override
+	// // public boolean playerCollision(Player p, int key, List<List<Collider>>
+	// // colliders, OurKeyListener ourKeyListener) {
+	// public boolean playerCollision(List<List<Collider>> colliders, OurKeyListener
+	// ourKeyListener) {
+	// System.out.println("OBJECT COLLISION WITH PLAYER");
 
-		ourKeyListener.getGUI().addItem(collectableName);
+	// ourKeyListener.getGUI().addItem(collectableName);
 
-		removeSelf(colliders);
+	// removeSelf(colliders);
 
-		ourKeyListener.updateColliders(colliders);
-		ourKeyListener.getGUI().updateColliders(colliders);
-		// if true, stop moving
+	// ourKeyListener.updateColliders(colliders);
+	// ourKeyListener.getGUI().updateColliders(colliders);
+	// // if true, stop moving
 
-		return false;
-	}
+	// return false;
+	// }
 
 	public String getName() {
 		return collectableName;
