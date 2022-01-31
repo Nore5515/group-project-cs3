@@ -1,12 +1,12 @@
-// import java.util.List;
+import java.util.List;
 
-public class Collider {
+abstract class Collider {
 
 	int x;
 	int y;
 	String name;
 
-	public Collider(int _x, int _y) {
+	protected Collider(int _x, int _y) {
 		x = _x;
 		y = _y;
 		name = "DEFAULT";
@@ -34,10 +34,16 @@ public class Collider {
 	// colliders, OurKeyListener ourKeyListener) {
 	// WHAT THE FRICK???? WH-WHY?! HOW?!
 	// I had it so that everyone overrode it...
-	public boolean playerCollision() {
+
+	// This is to be overridden by it's children/
+	public boolean playerCollision(Player p, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
 		System.out.println("DEFAULT COLLIDER HIT PLAYER");
 
 		// if true, stop moving
+		return playerCollision();
+	}
+
+	public boolean playerCollision() {
 		return false;
 	}
 

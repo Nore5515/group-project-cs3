@@ -73,8 +73,8 @@ public class OurKeyListener implements KeyListener {
 		for (int x = 0; x < colliders.size(); x++) {
 			for (int y = 0; y < colliders.get(x).size(); y++) {
 				if (_x == colliders.get(x).get(y).getX() && _y == colliders.get(x).get(y).getY()) {
+					return colliders.get(x).get(y).playerCollision(p, colliders, this);
 					// return colliders.get(x).get(y).playerCollision(p, key, colliders, this);
-					return colliders.get(x).get(y).playerCollision();
 				}
 			}
 

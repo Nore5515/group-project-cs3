@@ -11,8 +11,8 @@ public class Exit extends Collider {
 		exitY = _y;
 	}
 
-	// @Override
-	public boolean playerCollision(OurKeyListener ourKeyListener) {
+	@Override
+	public boolean playerCollision(Player p, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
 
 		System.out.println("EXIT HIT PLAYER");
 		ourKeyListener.getGUI().nextLevel();

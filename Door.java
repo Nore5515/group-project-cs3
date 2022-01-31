@@ -11,10 +11,11 @@ public class Door extends Collider {
 		doorY = _y;
 	}
 
-	// @Override
 	// public boolean playerCollision(Player p, int key, List<List<Collider>>
 	// colliders, OurKeyListener ourKeyListener) {
-	public boolean playerCollision(List<List<Collider>> colliders) {
+	// public boolean playerCollision(List<List<Collider>> colliders) {
+	@Override
+	public boolean playerCollision(Player p, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
 
 		System.out.println("DOOR HIT PLAYER");
 		removeSelf(colliders);
