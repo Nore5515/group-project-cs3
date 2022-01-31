@@ -30,28 +30,25 @@ public class OurKeyListener implements KeyListener {
 	public void keyPressed(KeyEvent arg0) {
 		updateMovement();
 		if (arg0.getKeyCode() == KeyEvent.VK_DOWN) {
-			collided = isCollision(p.getX() * xBuffer, (p.getY() + 1) * yBuffer, gui.getColliders(), p,
-					KeyEvent.VK_DOWN);
+			collided = isCollision(p.getX() * xBuffer, (p.getY() + 1) * yBuffer, gui.getColliders());
 			if (!collided) {
 				movePlayer(0, 1);
 			}
 		}
 		if (arg0.getKeyCode() == KeyEvent.VK_UP) {
-			collided = isCollision(p.getX() * xBuffer, (p.getY() - 1) * yBuffer, gui.getColliders(), p, KeyEvent.VK_UP);
+			collided = isCollision(p.getX() * xBuffer, (p.getY() - 1) * yBuffer, gui.getColliders());
 			if (!collided) {
 				movePlayer(0, -1);
 			}
 		}
 		if (arg0.getKeyCode() == KeyEvent.VK_LEFT) {
-			collided = isCollision((p.getX() - 1) * xBuffer, p.getY() * yBuffer, gui.getColliders(), p,
-					KeyEvent.VK_LEFT);
+			collided = isCollision((p.getX() - 1) * xBuffer, p.getY() * yBuffer, gui.getColliders());
 			if (!collided) {
 				movePlayer(-1, 0);
 			}
 		}
 		if (arg0.getKeyCode() == KeyEvent.VK_RIGHT) {
-			collided = isCollision((p.getX() + 1) * xBuffer, p.getY() * yBuffer, gui.getColliders(), p,
-					KeyEvent.VK_RIGHT);
+			collided = isCollision((p.getX() + 1) * xBuffer, p.getY() * yBuffer, gui.getColliders());
 			if (!collided) {
 				movePlayer(1, 0);
 			}
@@ -69,12 +66,15 @@ public class OurKeyListener implements KeyListener {
 		collided = false;
 	}
 
-	public boolean isCollision(int _x, int _y, List<List<Collider>> _colliders, Player p, int key) {
+	// public boolean isCollision(int _x, int _y, List<List<Collider>> _colliders,
+	// Player p, int key) {
+	public boolean isCollision(int _x, int _y, List<List<Collider>> _colliders) {
 		colliders = _colliders;
 		for (int x = 0; x < colliders.size(); x++) {
 			for (int y = 0; y < colliders.get(x).size(); y++) {
 				if (_x == colliders.get(x).get(y).getX() && _y == colliders.get(x).get(y).getY()) {
-					return colliders.get(x).get(y).playerCollision(p, key, colliders, this);
+					return colliders.get(x).get(y).playerCollision(p, colliders, this);
+					// return colliders.get(x).get(y).playerCollision(p, key, colliders, this);
 				}
 			}
 

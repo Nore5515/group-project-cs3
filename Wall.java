@@ -11,8 +11,12 @@ public class Wall extends Collider {
 		wallName = "WALL";
 	}
 
+	// public boolean playerCollision(Player p, int key, List<List<Collider>>
+	// colliders, OurKeyListener ourKeyListener) {
+	// Oh this is so stupid i override it depending on the object...
+
 	@Override
-	public boolean playerCollision(Player p, int key, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
+	public boolean playerCollision(Player p, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
 		System.out.println("WALL COLLISION WITH PLAYER");
 
 		// if true, stop moving

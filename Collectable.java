@@ -14,8 +14,11 @@ public class Collectable extends Collider {
 		collectableName = _name;
 	}
 
+	// @Override
+	// // public boolean playerCollision(Player p, int key, List<List<Collider>>
+	// // colliders, OurKeyListener ourKeyListener) {
 	@Override
-	public boolean playerCollision(Player p, int key, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
+	public boolean playerCollision(Player p, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
 		System.out.println("OBJECT COLLISION WITH PLAYER");
 
 		ourKeyListener.getGUI().addItem(collectableName);
