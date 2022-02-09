@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
 
+// import org.json.simple.JSONObject;
+// import org.json.simple.JSONArray;
+// import org.json.simple.parser.ParseException;
+// import org.json.simple.parser.JSONParser;
+
 import javax.swing.*;
 
 public class GUI {
@@ -313,7 +318,7 @@ public class GUI {
 		return f;
 	}
 
-	public void updateWalls() {
+	public void jsonUpdateWalls() {
 		walls.clear();
 		if (level == 0) {
 			for (int x = 0; x < gridSize; x++) {
@@ -440,6 +445,10 @@ public class GUI {
 			 * }
 			 */
 		}
+	}
+
+	public void updateWalls() {
+		jsonUpdateWalls();
 	}
 
 	public void addItem(String _name) {
