@@ -1,3 +1,5 @@
+package com.mycompany.app;
+
 import java.io.Serializable;
 
 public class Player implements Serializable {

@@ -1,3 +1,5 @@
+package com.mycompany.app;
+// import GUI.GUI;
 
 public class Runner {
 
@@ -6,6 +8,7 @@ public class Runner {
 		// forgive my naming
 
 		// constructor: int gridSize
+
 		new GUI(20);
 
 		System.out.println("Is this running?");
