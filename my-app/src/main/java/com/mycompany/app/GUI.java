@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
 
-import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
-import org.json.simple.parser.ParseException;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import java.io.FileReader;
+import java.util.Iterator;
 
 import javax.swing.*;
 
@@ -59,7 +61,37 @@ public class GUI {
 
 	Random rand = new Random();
 
+	public void decodeJson() {
+		JSONParser parser = new JSONParser();
+		try {
+			Object obj = parser.parse(new FileReader(
+					"/Users/noah/projects/java/group-project-cs3/my-app/src/main/java/com/mycompany/app/levels.json"));
+
+			// A JSON object. Key value pairs are unordered. JSONObject supports
+			// java.util.Map interface.
+			// JSONObject jsonObject = (JSONObject) obj;
+
+			// A JSON array. JSONObject supports java.util.List interface.
+			// JSONArray companyList = (JSONArray) jsonObject.get("Company List");
+
+			// An iterator over a collection. Iterator takes the place of Enumeration in the
+			// Java Collections Framework.
+			// Iterators differ from enumerations in two ways:
+			// 1. Iterators allow the caller to remove elements from the underlying
+			// collection during the iteration with well-defined semantics.
+			// 2. Method names have been improved.
+			// Iterator<JSONObject> iterator = companyList.iterator();
+			// while (iterator.hasNext()) {
+			// System.out.println(iterator.next());
+			// }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public GUI(int _gridSize) {
+		decodeJson();
+
 		f = new JFrame();
 		f.setVisible(true);
 		// f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
