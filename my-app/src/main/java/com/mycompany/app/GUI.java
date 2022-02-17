@@ -76,14 +76,14 @@ public class GUI {
 		}
 	}
 
-	public JSONArray getStringJSONArray() {
+	public JSONArray getStringJSONArray(String levelTitle) {
 		JSONParser parser = new JSONParser();
 		try {
 			Object obj = parser.parse(new FileReader(
 					"/Users/noah/projects/java/group-project-cs3/my-app/src/main/java/com/mycompany/app/levels.json"));
 
 			JSONObject jsonFile = (JSONObject) obj;
-			JSONObject level0 = (JSONObject) jsonFile.get("Level0");
+			JSONObject level0 = (JSONObject) jsonFile.get(levelTitle);
 			return (JSONArray) level0.get("rows");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -372,7 +372,8 @@ public class GUI {
 	public void jsonUpdateWalls() {
 		walls.clear();
 
-		List<int[]> wallPositions = getWallPositionArray(getStringJSONArray());
+		List<int[]> wallPositions = getWallPositionArray(getStringJSONArray("Level0"));
+		List<int[]> wallPositionsLevel1 = getWallPositionArray(getStringJSONArray("Level1"));
 
 		if (level == 0) {
 			for (int x = 0; x < gridSize; x++) {
@@ -383,89 +384,94 @@ public class GUI {
 			}
 			play.setX(1);
 			play.setY(1);
-			addWall(walls, 1, 2);
-			addWall(walls, 2, 2);
-			addWall(walls, 3, 2);
-			addWall(walls, 5, 2);
-			addWall(walls, 6, 2);
-			addWall(walls, 7, 2);
-			addWall(walls, 8, 2);
-			addWall(walls, 8, 1);
-			addWall(walls, 8, 3);
-			addWall(walls, 1, 4);
-			addWall(walls, 2, 4);
-			addWall(walls, 3, 4);
-			addWall(walls, 5, 4);
-			addWall(walls, 6, 4);
-			addWall(walls, 7, 4);
-			addWall(walls, 8, 4);
-			addWall(walls, 1, 5);
-			addWall(walls, 3, 5);
-			addWall(walls, 5, 5);
-			addWall(walls, 5, 6);
-			addWall(walls, 5, 7);
-			addWall(walls, 5, 8);
-			addWall(walls, 5, 9);
-			addWall(walls, 5, 10);
-			addWall(walls, 5, 11);
-			addWall(walls, 6, 5);
-			addWall(walls, 6, 6);
-			addWall(walls, 6, 7);
-			addWall(walls, 6, 8);
-			addWall(walls, 6, 9);
-			addWall(walls, 6, 10);
-			addWall(walls, 6, 11);
-			addWall(walls, 9, 1);
-			addWall(walls, 9, 2);
-			addWall(walls, 9, 3);
-			addWall(walls, 10, 1);
-			addWall(walls, 10, 2);
-			addWall(walls, 10, 3);
-			addWall(walls, 11, 1);
-			addWall(walls, 11, 2);
-			addWall(walls, 11, 3);
-			addWall(walls, 8, 4);
-			addWall(walls, 9, 4);
-			addWall(walls, 8, 12);
-			addWall(walls, 8, 11);
-			addWall(walls, 8, 10);
-			addWall(walls, 8, 9);
-			addWall(walls, 9, 12);
-			addWall(walls, 9, 11);
-			addWall(walls, 9, 10);
-			addWall(walls, 9, 9);
-			addWall(walls, 11, 5);
-			addWall(walls, 11, 8);
-			addWall(walls, 11, 9);
-			addWall(walls, 11, 10);
-			addWall(walls, 11, 11);
-			addWall(walls, 11, 4);
-			addWall(walls, 10, 10);
-			addWall(walls, 10, 11);
-			addWall(walls, 10, 12);
-			addWall(walls, 12, 1);
-			addWall(walls, 13, 1);
-			addWall(walls, 14, 1);
-			addWall(walls, 15, 1);
-			addWall(walls, 16, 1);
-			addWall(walls, 17, 1);
-			addWall(walls, 17, 2);
-			addWall(walls, 17, 3);
-			addWall(walls, 17, 4);
-			addWall(walls, 17, 5);
-			addWall(walls, 17, 6);
-			addWall(walls, 17, 7);
-			addWall(walls, 17, 8);
-			addWall(walls, 17, 9);
-			addWall(walls, 17, 10);
-			addWall(walls, 17, 11);
-			addWall(walls, 17, 12);
-			addWall(walls, 16, 12);
-			addWall(walls, 15, 12);
-			addWall(walls, 14, 12);
-			addWall(walls, 13, 12);
-			addWall(walls, 12, 12);
-			addWall(walls, 11, 12);
+
+			for (int x = 0; x < wallPositionsLevel1.size(); x++) {
+				// System.out.println(wallPositions.get(x));
+				walls.add(new Wall(wallPositionsLevel1.get(x)[0] * xBuffer, wallPositionsLevel1.get(x)[1] * yBuffer));
+			}
+			// addWall(walls, 1, 2);
+			// addWall(walls, 2, 2);
+			// addWall(walls, 3, 2);
+			// addWall(walls, 5, 2);
+			// addWall(walls, 6, 2);
+			// addWall(walls, 7, 2);
+			// addWall(walls, 8, 2);
+			// addWall(walls, 8, 1);
+			// addWall(walls, 8, 3);
+			// addWall(walls, 1, 4);
+			// addWall(walls, 2, 4);
+			// addWall(walls, 3, 4);
+			// addWall(walls, 5, 4);
+			// addWall(walls, 6, 4);
+			// addWall(walls, 7, 4);
+			// addWall(walls, 8, 4);
+			// addWall(walls, 1, 5);
+			// addWall(walls, 3, 5);
+			// addWall(walls, 5, 5);
+			// addWall(walls, 5, 6);
+			// addWall(walls, 5, 7);
+			// addWall(walls, 5, 8);
+			// addWall(walls, 5, 9);
+			// addWall(walls, 5, 10);
+			// addWall(walls, 5, 11);
+			// addWall(walls, 6, 5);
+			// addWall(walls, 6, 6);
+			// addWall(walls, 6, 7);
+			// addWall(walls, 6, 8);
+			// addWall(walls, 6, 9);
+			// addWall(walls, 6, 10);
+			// addWall(walls, 6, 11);
+			// addWall(walls, 9, 1);
+			// addWall(walls, 9, 2);
+			// addWall(walls, 9, 3);
+			// addWall(walls, 10, 1);
+			// addWall(walls, 10, 2);
+			// addWall(walls, 10, 3);
+			// addWall(walls, 11, 1);
+			// addWall(walls, 11, 2);
+			// addWall(walls, 11, 3);
+			// addWall(walls, 8, 4);
+			// addWall(walls, 9, 4);
+			// addWall(walls, 8, 12);
+			// addWall(walls, 8, 11);
+			// addWall(walls, 8, 10);
+			// addWall(walls, 8, 9);
+			// addWall(walls, 9, 12);
+			// addWall(walls, 9, 11);
+			// addWall(walls, 9, 10);
+			// addWall(walls, 9, 9);
+			// addWall(walls, 11, 5);
+			// addWall(walls, 11, 8);
+			// addWall(walls, 11, 9);
+			// addWall(walls, 11, 10);
+			// addWall(walls, 11, 11);
+			// addWall(walls, 11, 4);
+			// addWall(walls, 10, 10);
+			// addWall(walls, 10, 11);
+			// addWall(walls, 10, 12);
+			// addWall(walls, 12, 1);
+			// addWall(walls, 13, 1);
+			// addWall(walls, 14, 1);
+			// addWall(walls, 15, 1);
+			// addWall(walls, 16, 1);
+			// addWall(walls, 17, 1);
+			// addWall(walls, 17, 2);
+			// addWall(walls, 17, 3);
+			// addWall(walls, 17, 4);
+			// addWall(walls, 17, 5);
+			// addWall(walls, 17, 6);
+			// addWall(walls, 17, 7);
+			// addWall(walls, 17, 8);
+			// addWall(walls, 17, 9);
+			// addWall(walls, 17, 10);
+			// addWall(walls, 17, 11);
+			// addWall(walls, 17, 12);
+			// addWall(walls, 16, 12);
+			// addWall(walls, 15, 12);
+			// addWall(walls, 14, 12);
+			// addWall(walls, 13, 12);
+			// addWall(walls, 12, 12);
+			// addWall(walls, 11, 12);
 		} else if (level == 1) {
 			addWall(walls, 1, 1);
 			addWall(walls, 1, 3);
