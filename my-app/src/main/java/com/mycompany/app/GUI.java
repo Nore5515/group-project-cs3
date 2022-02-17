@@ -61,36 +61,54 @@ public class GUI {
 
 	Random rand = new Random();
 
-	public void decodeJson() {
+	public JSONArray getWallJSONArray() {
 		JSONParser parser = new JSONParser();
 		try {
 			Object obj = parser.parse(new FileReader(
 					"/Users/noah/projects/java/group-project-cs3/my-app/src/main/java/com/mycompany/app/levels.json"));
 
-			// A JSON object. Key value pairs are unordered. JSONObject supports
-			// java.util.Map interface.
-			// JSONObject jsonObject = (JSONObject) obj;
-
-			// A JSON array. JSONObject supports java.util.List interface.
-			// JSONArray companyList = (JSONArray) jsonObject.get("Company List");
-
-			// An iterator over a collection. Iterator takes the place of Enumeration in the
-			// Java Collections Framework.
-			// Iterators differ from enumerations in two ways:
-			// 1. Iterators allow the caller to remove elements from the underlying
-			// collection during the iteration with well-defined semantics.
-			// 2. Method names have been improved.
-			// Iterator<JSONObject> iterator = companyList.iterator();
-			// while (iterator.hasNext()) {
-			// System.out.println(iterator.next());
-			// }
+			JSONObject jsonFile = (JSONObject) obj;
+			JSONObject level0 = (JSONObject) jsonFile.get("Level0");
+			return (JSONArray) level0.get("walls");
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new JSONArray();
 		}
 	}
 
+	public JSONArray getStringJSONArray() {
+		JSONParser parser = new JSONParser();
+		try {
+			Object obj = parser.parse(new FileReader(
+					"/Users/noah/projects/java/group-project-cs3/my-app/src/main/java/com/mycompany/app/levels.json"));
+
+			JSONObject jsonFile = (JSONObject) obj;
+			JSONObject level0 = (JSONObject) jsonFile.get("Level0");
+			return (JSONArray) level0.get("rows");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new JSONArray();
+		}
+	}
+
+	public List<int[]> getWallPositionArray(JSONArray jArray) {
+		ArrayList<int[]> wallArray = new ArrayList<>();
+		char[] mapLine;
+		System.out.println("OH GOD PLEASE WORK:");
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == '#') {
+					wallArray.add(new int[] { y, x });
+				}
+			}
+			System.out.println(mapLine);
+		}
+		return wallArray;
+	}
+
 	public GUI(int _gridSize) {
-		decodeJson();
+		// decodeJson();
 
 		f = new JFrame();
 		f.setVisible(true);
@@ -353,6 +371,9 @@ public class GUI {
 
 	public void jsonUpdateWalls() {
 		walls.clear();
+
+		List<int[]> wallPositions = getWallPositionArray(getStringJSONArray());
+
 		if (level == 0) {
 			for (int x = 0; x < gridSize; x++) {
 				walls.add(new Wall(x * xBuffer, 0));
@@ -465,12 +486,16 @@ public class GUI {
 				walls.add(new Wall(xBuffer * (gridSize - 2), x * yBuffer));
 			}
 		} else {
-			for (int x = 0; x < gridSize; x++) {
-				walls.add(new Wall(x * xBuffer, 0));
-				walls.add(new Wall(0, x * yBuffer));
-				walls.add(new Wall(x * xBuffer, yBuffer * (13)));
-				walls.add(new Wall(xBuffer * (gridSize - 2), x * yBuffer));
+			for (int x = 0; x < wallPositions.size(); x++) {
+				// System.out.println(wallPositions.get(x));
+				walls.add(new Wall(wallPositions.get(x)[0] * xBuffer, wallPositions.get(x)[1] * yBuffer));
 			}
+			// for (int x = 0; x < gridSize; x++) {
+			// walls.add(new Wall(x * xBuffer, 0));
+			// walls.add(new Wall(0, x * yBuffer));
+			// walls.add(new Wall(x * xBuffer, yBuffer * (13)));
+			// walls.add(new Wall(xBuffer * (gridSize - 2), x * yBuffer));
+			// }
 			/*
 			 * for (int x = 0; x < gridSize; x++){
 			 * walls.add(new Wall(x*xBuffer, 6*yBuffer));
@@ -532,6 +557,11 @@ public class GUI {
 
 	public void addWall(List<Collider> wall, int x, int y) {
 		wall.add(new Wall(x * xBuffer, y * yBuffer));
+	}
+
+	// Send an array of [x,y] (to better implement JSONification)
+	public void addWall(List<Collider> wall, int[] pos) {
+		wall.add(new Wall(pos[0] * xBuffer, pos[1] * yBuffer));
 	}
 
 	public void addDoor(List<Collider> door, int x, int y) {
