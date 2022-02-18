@@ -133,6 +133,21 @@ public class GUI {
 		return doorArray;
 	}
 
+	public List<int[]> getCoinPositionArray(JSONArray jArray) {
+		ArrayList<int[]> coinArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'c') {
+					System.out.println("C found");
+					coinArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return coinArray;
+	}
+
 	public GUI(int _gridSize) {
 		// decodeJson();
 
@@ -283,12 +298,7 @@ public class GUI {
 		updateWalls();
 
 		// Adds Coins to List
-		if (level == 0) {
-			items.add(new Collectable(1 * xBuffer, 3 * yBuffer, COIN));
-			items.add(new Collectable(2 * xBuffer, 10 * yBuffer, COIN));
-			items.add(new Collectable(7 * xBuffer, 3 * yBuffer, TORCH));
-			items.add(new Collectable(2 * xBuffer, 8 * yBuffer, TORCH));
-		}
+		updateCoins();
 
 		// Adds Exit
 		updateExits();
@@ -476,16 +486,21 @@ public class GUI {
 			for (int x = 0; x < doorPositionsLevel0.size(); x++) {
 				doors.add(new Door(doorPositionsLevel0.get(x)[0] * xBuffer, doorPositionsLevel0.get(x)[1] * yBuffer));
 			}
-			// addDoor(doors, 3, 1);
-			// addDoor(doors, 5, 1);
-			// addDoor(doors, 3, 3);
-			// addDoor(doors, 5, 3);
-			// addDoor(doors, 4, 4);
-			// addDoor(doors, 5, 12);
-			// addDoor(doors, 11, 6);
-			// addDoor(doors, 11, 7);
 		} else {
 			doors.add(new Door(level * 1 * xBuffer, level * 1 * yBuffer));
+		}
+	}
+
+	public void updateCoins() {
+		System.out.println("Is this called?");
+		List<int[]> coinPositionsLevel0 = getCoinPositionArray(getStringJSONArray("Level0"));
+
+		if (level == 0) {
+			for (int x = 0; x < coinPositionsLevel0.size(); x++) {
+				items.add(new Collectable(coinPositionsLevel0.get(x)[0] * xBuffer,
+						coinPositionsLevel0.get(x)[1] * yBuffer, "Coin"));
+			}
+		} else {
 		}
 	}
 
@@ -528,29 +543,11 @@ public class GUI {
 		}
 		// f.remove(inventoryScreen);
 		f.add(p);
-		if (level == 1) {
-			for (int x = 5; x < 10; x++) {
-				for (int y = 5; y < 10; y++) {
-					if (x == 5 || x == 9 || y == 5 || y == 9) {
-						items.add(new Collectable(x * xBuffer, y * yBuffer, "Coin"));
-					}
-				}
-			}
-			items.add(new Collectable(6 * xBuffer, 6 * yBuffer, "Bomb"));
-		} else if (level == 0) {
-			items.add(new Collectable(2, 10, "Coin"));
-			items.add(new Collectable(1, 3, "Coin"));
-		} else {
-			for (int x = 0; x < 5; x++) {
-				if (rand.nextInt(2) == 0) {
-					items.add(new Collectable(5 * xBuffer, x * yBuffer, "Coin"));
-				}
-			}
-		}
 		System.out.println("LEVEL " + level);
 		updateWalls();
 		updateDoors();
 		updateExits();
+		updateCoins();
 	}
 
 	public List<List<Collider>> getColliders() {
