@@ -488,7 +488,6 @@ public class GUI {
 	}
 
 	public void updateCoins() {
-		items.clear();
 		String levelTitle = LEVEL + level;
 
 		if (getStringJSONArray(levelTitle) != null) {
@@ -501,7 +500,6 @@ public class GUI {
 	}
 
 	public void updateTorches() {
-		items.clear();
 		String levelTitle = LEVEL + level;
 
 		if (getStringJSONArray(levelTitle) != null) {
@@ -551,6 +549,7 @@ public class GUI {
 	}
 
 	public void nextLevel() {
+		items.clear();
 		level++;
 		f.remove(p);
 		// f.add(inventoryScreen);
