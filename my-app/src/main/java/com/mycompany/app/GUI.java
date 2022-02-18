@@ -101,7 +101,6 @@ public class GUI {
 					wallArray.add(new int[] { y, x });
 				}
 			}
-			System.out.println(mapLine);
 		}
 		return wallArray;
 	}
@@ -116,9 +115,22 @@ public class GUI {
 					exitArray.add(new int[] { y, x });
 				}
 			}
-			System.out.println(mapLine);
 		}
 		return exitArray;
+	}
+
+	public List<int[]> getDoorPositionArray(JSONArray jArray) {
+		ArrayList<int[]> doorArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'D') {
+					doorArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return doorArray;
 	}
 
 	public GUI(int _gridSize) {
@@ -457,16 +469,21 @@ public class GUI {
 	}
 
 	public void updateDoors() {
+		List<int[]> doorPositionsLevel0 = getDoorPositionArray(getStringJSONArray("Level0"));
+
 		doors.clear();
 		if (level == 0) {
-			addDoor(doors, 3, 1);
-			addDoor(doors, 5, 1);
-			addDoor(doors, 3, 3);
-			addDoor(doors, 5, 3);
-			addDoor(doors, 4, 4);
-			addDoor(doors, 5, 12);
-			addDoor(doors, 11, 6);
-			addDoor(doors, 11, 7);
+			for (int x = 0; x < doorPositionsLevel0.size(); x++) {
+				doors.add(new Door(doorPositionsLevel0.get(x)[0] * xBuffer, doorPositionsLevel0.get(x)[1] * yBuffer));
+			}
+			// addDoor(doors, 3, 1);
+			// addDoor(doors, 5, 1);
+			// addDoor(doors, 3, 3);
+			// addDoor(doors, 5, 3);
+			// addDoor(doors, 4, 4);
+			// addDoor(doors, 5, 12);
+			// addDoor(doors, 11, 6);
+			// addDoor(doors, 11, 7);
 		} else {
 			doors.add(new Door(level * 1 * xBuffer, level * 1 * yBuffer));
 		}
