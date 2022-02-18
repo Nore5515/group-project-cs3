@@ -161,6 +161,20 @@ public class GUI {
 		return torchArray;
 	}
 
+	public List<int[]> getSpawnPositionArray(JSONArray jArray) {
+		ArrayList<int[]> spawnArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'P') {
+					spawnArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return spawnArray;
+	}
+
 	public GUI(int _gridSize) {
 		// decodeJson();
 
@@ -321,6 +335,9 @@ public class GUI {
 
 		// Adds Doors
 		updateDoors();
+
+		// Add Player Spawn
+		updatePlayerSpawn();
 
 		p = new JPanel() {
 			// Below is Panel Painting
@@ -508,7 +525,6 @@ public class GUI {
 	}
 
 	public void updateCoins() {
-		System.out.println("Is this called?");
 		List<int[]> coinPositionsLevel0 = getCoinPositionArray(getStringJSONArray("Level0"));
 
 		if (level == 0) {
@@ -516,12 +532,10 @@ public class GUI {
 				items.add(new Collectable(coinPositionsLevel0.get(x)[0] * xBuffer,
 						coinPositionsLevel0.get(x)[1] * yBuffer, "Coin"));
 			}
-		} else {
 		}
 	}
 
 	public void updateTorches() {
-		System.out.println("Is this called?");
 		List<int[]> torchPositionsLevel0 = getTorchPositionArray(getStringJSONArray("Level0"));
 
 		if (level == 0) {
@@ -530,6 +544,19 @@ public class GUI {
 						torchPositionsLevel0.get(x)[1] * yBuffer, "Torch"));
 			}
 		} else {
+		}
+	}
+
+	public void updatePlayerSpawn() {
+		String levelTitle = "Level" + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> spawnPositionsLevel = getSpawnPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < spawnPositionsLevel.size(); x++) {
+				// move player here
+				play.setX(spawnPositionsLevel.get(x)[0]);
+				play.setY(spawnPositionsLevel.get(x)[1]);
+			}
 		}
 	}
 
@@ -578,6 +605,7 @@ public class GUI {
 		updateExits();
 		updateCoins();
 		updateTorches();
+		updatePlayerSpawn();
 	}
 
 	public List<List<Collider>> getColliders() {

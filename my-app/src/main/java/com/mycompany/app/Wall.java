@@ -18,7 +18,7 @@ public class Wall extends Collider {
 
 	@Override
 	public boolean playerCollision(Player p, List<List<Collider>> colliders, OurKeyListener ourKeyListener) {
-		System.out.println("WALL COLLISION WITH PLAYER");
+		// System.out.println("WALL COLLISION WITH PLAYER");
 
 		// if true, stop moving
 		return true;
