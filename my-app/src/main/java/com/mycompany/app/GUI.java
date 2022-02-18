@@ -140,12 +140,25 @@ public class GUI {
 			mapLine = ((String) jArray.get(x)).toCharArray();
 			for (int y = 0; y < mapLine.length; y++) {
 				if (mapLine[y] == 'c') {
-					System.out.println("C found");
 					coinArray.add(new int[] { y, x });
 				}
 			}
 		}
 		return coinArray;
+	}
+
+	public List<int[]> getTorchPositionArray(JSONArray jArray) {
+		ArrayList<int[]> torchArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 't') {
+					torchArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return torchArray;
 	}
 
 	public GUI(int _gridSize) {
@@ -299,6 +312,9 @@ public class GUI {
 
 		// Adds Coins to List
 		updateCoins();
+
+		// Add Torches to List
+		updateTorches();
 
 		// Adds Exit
 		updateExits();
@@ -504,6 +520,19 @@ public class GUI {
 		}
 	}
 
+	public void updateTorches() {
+		System.out.println("Is this called?");
+		List<int[]> torchPositionsLevel0 = getTorchPositionArray(getStringJSONArray("Level0"));
+
+		if (level == 0) {
+			for (int x = 0; x < torchPositionsLevel0.size(); x++) {
+				items.add(new Collectable(torchPositionsLevel0.get(x)[0] * xBuffer,
+						torchPositionsLevel0.get(x)[1] * yBuffer, "Torch"));
+			}
+		} else {
+		}
+	}
+
 	public void addWall(List<Collider> wall, int x, int y) {
 		wall.add(new Wall(x * xBuffer, y * yBuffer));
 	}
@@ -548,6 +577,7 @@ public class GUI {
 		updateDoors();
 		updateExits();
 		updateCoins();
+		updateTorches();
 	}
 
 	public List<List<Collider>> getColliders() {
