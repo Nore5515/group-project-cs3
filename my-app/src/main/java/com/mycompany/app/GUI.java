@@ -42,6 +42,7 @@ public class GUI {
 	// Consts
 	private static final String TORCH = "Torch";
 	private static final String COIN = "Coin";
+	private static final String LEVEL = "Level";
 
 	// List of all held items
 	List<String> inventory;
@@ -440,47 +441,13 @@ public class GUI {
 
 	public void jsonUpdateWalls() {
 		walls.clear();
+		String levelTitle = LEVEL + level;
 
-		List<int[]> wallPositions = getWallPositionArray(getStringJSONArray("testLevel"));
-		List<int[]> wallPositionsLevel0 = getWallPositionArray(getStringJSONArray("Level0"));
-		List<int[]> wallPositionsLevel1 = getWallPositionArray(getStringJSONArray("Level1"));
-
-		if (level == 0) {
-			for (int x = 0; x < gridSize; x++) {
-				walls.add(new Wall(x * xBuffer, 0));
-				walls.add(new Wall(0, x * yBuffer));
-				walls.add(new Wall(x * xBuffer, yBuffer * (13)));
-				walls.add(new Wall(xBuffer * (gridSize - 2), x * yBuffer));
-			}
-			play.setX(1);
-			play.setY(1);
-
-			for (int x = 0; x < wallPositionsLevel0.size(); x++) {
-				// System.out.println(wallPositions.get(x));
-				walls.add(new Wall(wallPositionsLevel0.get(x)[0] * xBuffer, wallPositionsLevel0.get(x)[1] * yBuffer));
-			}
-		} else if (level == 1) {
-			for (int x = 0; x < wallPositionsLevel1.size(); x++) {
-				// System.out.println(wallPositions.get(x));
-				walls.add(new Wall(wallPositionsLevel1.get(x)[0] * xBuffer, wallPositionsLevel1.get(x)[1] * yBuffer));
-			}
-		} else {
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> wallPositions = getWallPositionArray(getStringJSONArray(levelTitle));
 			for (int x = 0; x < wallPositions.size(); x++) {
-				// System.out.println(wallPositions.get(x));
 				walls.add(new Wall(wallPositions.get(x)[0] * xBuffer, wallPositions.get(x)[1] * yBuffer));
 			}
-			// for (int x = 0; x < gridSize; x++) {
-			// walls.add(new Wall(x * xBuffer, 0));
-			// walls.add(new Wall(0, x * yBuffer));
-			// walls.add(new Wall(x * xBuffer, yBuffer * (13)));
-			// walls.add(new Wall(xBuffer * (gridSize - 2), x * yBuffer));
-			// }
-			/*
-			 * for (int x = 0; x < gridSize; x++){
-			 * walls.add(new Wall(x*xBuffer, 6*yBuffer));
-			 * walls.add(new Wall(x*xBuffer, 10*yBuffer));
-			 * }
-			 */
 		}
 	}
 
@@ -493,17 +460,14 @@ public class GUI {
 	}
 
 	public void updateExits() {
-		List<int[]> exitPositionsLevel0 = getExitPositionArray(getStringJSONArray("Level0"));
-
 		exits.clear();
-		if (level == 0) {
-			for (int x = 0; x < exitPositionsLevel0.size(); x++) {
-				exits.add(new Exit(exitPositionsLevel0.get(x)[0] * xBuffer, exitPositionsLevel0.get(x)[1] * yBuffer));
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> exitPositions = getExitPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < exitPositions.size(); x++) {
+				exits.add(new Exit(exitPositions.get(x)[0] * xBuffer, exitPositions.get(x)[1] * yBuffer));
 			}
-		} else if (level == 1) {
-			exits.add(new Exit(xBuffer * 9, yBuffer * 3));
-		} else {
-			exits.add(new Exit((level * 2) * xBuffer, (level * 2 * yBuffer)));
 		}
 	}
 
@@ -512,43 +476,45 @@ public class GUI {
 	}
 
 	public void updateDoors() {
-		List<int[]> doorPositionsLevel0 = getDoorPositionArray(getStringJSONArray("Level0"));
-
 		doors.clear();
-		if (level == 0) {
-			for (int x = 0; x < doorPositionsLevel0.size(); x++) {
-				doors.add(new Door(doorPositionsLevel0.get(x)[0] * xBuffer, doorPositionsLevel0.get(x)[1] * yBuffer));
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> doorPositions = getDoorPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < doorPositions.size(); x++) {
+				doors.add(new Door(doorPositions.get(x)[0] * xBuffer, doorPositions.get(x)[1] * yBuffer));
 			}
-		} else {
-			doors.add(new Door(level * 1 * xBuffer, level * 1 * yBuffer));
 		}
 	}
 
 	public void updateCoins() {
-		List<int[]> coinPositionsLevel0 = getCoinPositionArray(getStringJSONArray("Level0"));
+		items.clear();
+		String levelTitle = LEVEL + level;
 
-		if (level == 0) {
-			for (int x = 0; x < coinPositionsLevel0.size(); x++) {
-				items.add(new Collectable(coinPositionsLevel0.get(x)[0] * xBuffer,
-						coinPositionsLevel0.get(x)[1] * yBuffer, "Coin"));
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> coinPositions = getCoinPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < coinPositions.size(); x++) {
+				items.add(new Collectable(coinPositions.get(x)[0] * xBuffer,
+						coinPositions.get(x)[1] * yBuffer, COIN));
 			}
 		}
 	}
 
 	public void updateTorches() {
-		List<int[]> torchPositionsLevel0 = getTorchPositionArray(getStringJSONArray("Level0"));
+		items.clear();
+		String levelTitle = LEVEL + level;
 
-		if (level == 0) {
-			for (int x = 0; x < torchPositionsLevel0.size(); x++) {
-				items.add(new Collectable(torchPositionsLevel0.get(x)[0] * xBuffer,
-						torchPositionsLevel0.get(x)[1] * yBuffer, "Torch"));
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> torchPositions = getTorchPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < torchPositions.size(); x++) {
+				items.add(new Collectable(torchPositions.get(x)[0] * xBuffer,
+						torchPositions.get(x)[1] * yBuffer, TORCH));
 			}
-		} else {
 		}
 	}
 
 	public void updatePlayerSpawn() {
-		String levelTitle = "Level" + level;
+		String levelTitle = LEVEL + level;
 
 		if (getStringJSONArray(levelTitle) != null) {
 			List<int[]> spawnPositionsLevel = getSpawnPositionArray(getStringJSONArray(levelTitle));
