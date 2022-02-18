@@ -94,7 +94,6 @@ public class GUI {
 	public List<int[]> getWallPositionArray(JSONArray jArray) {
 		ArrayList<int[]> wallArray = new ArrayList<>();
 		char[] mapLine;
-		System.out.println("OH GOD PLEASE WORK:");
 		for (int x = 0; x < jArray.size(); x++) {
 			mapLine = ((String) jArray.get(x)).toCharArray();
 			for (int y = 0; y < mapLine.length; y++) {
@@ -105,6 +104,21 @@ public class GUI {
 			System.out.println(mapLine);
 		}
 		return wallArray;
+	}
+
+	public List<int[]> getExitPositionArray(JSONArray jArray) {
+		ArrayList<int[]> exitArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'E') {
+					exitArray.add(new int[] { y, x });
+				}
+			}
+			System.out.println(mapLine);
+		}
+		return exitArray;
 	}
 
 	public GUI(int _gridSize) {
@@ -374,6 +388,7 @@ public class GUI {
 
 		List<int[]> wallPositions = getWallPositionArray(getStringJSONArray("testLevel"));
 		List<int[]> wallPositionsLevel0 = getWallPositionArray(getStringJSONArray("Level0"));
+		List<int[]> wallPositionsLevel1 = getWallPositionArray(getStringJSONArray("Level1"));
 
 		if (level == 0) {
 			for (int x = 0; x < gridSize; x++) {
@@ -390,9 +405,9 @@ public class GUI {
 				walls.add(new Wall(wallPositionsLevel0.get(x)[0] * xBuffer, wallPositionsLevel0.get(x)[1] * yBuffer));
 			}
 		} else if (level == 1) {
-			for (int x = 0; x < wallPositionsLevel0.size(); x++) {
+			for (int x = 0; x < wallPositionsLevel1.size(); x++) {
 				// System.out.println(wallPositions.get(x));
-				walls.add(new Wall(wallPositionsLevel0.get(x)[0] * xBuffer, wallPositionsLevel0.get(x)[1] * yBuffer));
+				walls.add(new Wall(wallPositionsLevel1.get(x)[0] * xBuffer, wallPositionsLevel1.get(x)[1] * yBuffer));
 			}
 		} else {
 			for (int x = 0; x < wallPositions.size(); x++) {
@@ -423,20 +438,13 @@ public class GUI {
 	}
 
 	public void updateExits() {
+		List<int[]> exitPositionsLevel0 = getExitPositionArray(getStringJSONArray("Level0"));
+
 		exits.clear();
 		if (level == 0) {
-			exits.add(new Exit(10 * xBuffer, 4 * yBuffer));
-			exits.add(new Exit(10 * xBuffer, 9 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 2 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 3 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 4 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 5 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 6 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 7 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 8 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 9 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 10 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 11 * yBuffer));
+			for (int x = 0; x < exitPositionsLevel0.size(); x++) {
+				exits.add(new Exit(exitPositionsLevel0.get(x)[0] * xBuffer, exitPositionsLevel0.get(x)[1] * yBuffer));
+			}
 		} else if (level == 1) {
 			exits.add(new Exit(xBuffer * 9, yBuffer * 3));
 		} else {
