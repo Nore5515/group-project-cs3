@@ -230,7 +230,7 @@ public class GUI {
 		yBuffer = (f.getHeight()) / (gridSize - 1);
 
 		torchUsed = false;
-		torchHealth = 100;
+		torchHealth = 30;
 		coinUsed = false;
 
 		play = new Player(gridSize / 2, gridSize / 2);
@@ -321,7 +321,7 @@ public class GUI {
 						System.out.println(Torches.size());
 						// numLists--;
 						// Not currently being used
-						torchHealth = 100;
+						torchHealth = 30;
 						this.revalidate();
 						sightRange = 2;
 					} else {
