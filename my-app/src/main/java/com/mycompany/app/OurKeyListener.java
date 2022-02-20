@@ -56,6 +56,8 @@ public class OurKeyListener implements KeyListener {
 			}
 		}
 
+		// Definetly an easier way to do this...
+		// TODO
 		for (int i = 0; i < commands.size(); i++) {
 			// System.out.println("Does " + arg0.toString().substring(55, 56) + "==" +
 			// commands.get(i).getCommand());
