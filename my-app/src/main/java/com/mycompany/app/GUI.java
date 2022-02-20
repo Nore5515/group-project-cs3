@@ -244,7 +244,7 @@ public class GUI {
 		inventory = new ArrayList<>();
 
 		// TO-DO
-		// Update Function
+		// make an Update Function to simplify this
 		colliders = new ArrayList<>();
 		items = new ArrayList<>();
 		walls = new ArrayList<>();
@@ -323,6 +323,7 @@ public class GUI {
 						// Not currently being used
 						torchHealth = 100;
 						this.revalidate();
+						sightRange = 2;
 					} else {
 						sightRange = 5;
 					}
@@ -391,22 +392,7 @@ public class GUI {
 				g.setColor(Color.YELLOW);
 				if (!colliders.get(0).isEmpty()) {
 					for (int x = 0; x < colliders.get(0).size(); x++) {
-						// System.out.println("Does " +
-						// Math.abs((colliders.get(0).get(x).getX()-(play.getX()*xBuffer))/xBuffer) +
-						// "<=5 AND " +
-						// Math.abs((colliders.get(0).get(x).getY()-(play.getY()*yBuffer))/yBuffer) +
-						// "<=5?");
-						// if (Math.abs((colliders.get(0).get(x).getX()-(play.getX()*xBuffer))/xBuffer)
-						// <= 5 &&
-						// Math.abs((colliders.get(0).get(x).getY()-(play.getY()*yBuffer))/yBuffer) <=
-						// 5){
-						// System.out.println("Found Coin " + x);
 						g.fillRect(colliders.get(0).get(x).getX(), colliders.get(0).get(x).getY(), xBuffer, yBuffer);
-						// }
-						// else{
-						// System.out.println("Hidden Coin " + x + "!");
-						// }
-
 					}
 				}
 				// Draws coins Above
@@ -447,6 +433,7 @@ public class GUI {
 				// Walls Drawn Above
 
 				// Shadows Below
+				// System.out.println("Shadows painted at sight range: " + sightRange);
 				g.setColor(Color.BLACK);
 				for (int x = 0; x < gridSize * 2; x++) {
 					for (int y = 0; y < gridSize * 2; y++) {
@@ -510,7 +497,11 @@ public class GUI {
 	}
 
 	public void toggleTorch() {
+		// For some reason, adding this println makes it work...???
+		// TODO wtf
+		System.out.println("Toggled Torch!");
 		torchUsed = !torchUsed;
+
 	}
 
 	public void updateDoors() {
