@@ -42,6 +42,7 @@ public class GUI {
 	// Consts
 	private static final String TORCH = "Torch";
 	private static final String COIN = "Coin";
+	private static final String LEVEL = "Level";
 
 	// List of all held items
 	List<String> inventory;
@@ -94,7 +95,6 @@ public class GUI {
 	public List<int[]> getWallPositionArray(JSONArray jArray) {
 		ArrayList<int[]> wallArray = new ArrayList<>();
 		char[] mapLine;
-		System.out.println("OH GOD PLEASE WORK:");
 		for (int x = 0; x < jArray.size(); x++) {
 			mapLine = ((String) jArray.get(x)).toCharArray();
 			for (int y = 0; y < mapLine.length; y++) {
@@ -102,9 +102,78 @@ public class GUI {
 					wallArray.add(new int[] { y, x });
 				}
 			}
-			System.out.println(mapLine);
 		}
 		return wallArray;
+	}
+
+	public List<int[]> getExitPositionArray(JSONArray jArray) {
+		ArrayList<int[]> exitArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'E') {
+					exitArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return exitArray;
+	}
+
+	public List<int[]> getDoorPositionArray(JSONArray jArray) {
+		ArrayList<int[]> doorArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'D') {
+					doorArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return doorArray;
+	}
+
+	public List<int[]> getCoinPositionArray(JSONArray jArray) {
+		ArrayList<int[]> coinArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'c') {
+					coinArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return coinArray;
+	}
+
+	public List<int[]> getTorchPositionArray(JSONArray jArray) {
+		ArrayList<int[]> torchArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 't') {
+					torchArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return torchArray;
+	}
+
+	public List<int[]> getSpawnPositionArray(JSONArray jArray) {
+		ArrayList<int[]> spawnArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'P') {
+					spawnArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return spawnArray;
 	}
 
 	public GUI(int _gridSize) {
@@ -257,18 +326,19 @@ public class GUI {
 		updateWalls();
 
 		// Adds Coins to List
-		if (level == 0) {
-			items.add(new Collectable(1 * xBuffer, 3 * yBuffer, COIN));
-			items.add(new Collectable(2 * xBuffer, 10 * yBuffer, COIN));
-			items.add(new Collectable(7 * xBuffer, 3 * yBuffer, TORCH));
-			items.add(new Collectable(2 * xBuffer, 8 * yBuffer, TORCH));
-		}
+		updateCoins();
+
+		// Add Torches to List
+		updateTorches();
 
 		// Adds Exit
 		updateExits();
 
 		// Adds Doors
 		updateDoors();
+
+		// Add Player Spawn
+		updatePlayerSpawn();
 
 		p = new JPanel() {
 			// Below is Panel Painting
@@ -371,143 +441,13 @@ public class GUI {
 
 	public void jsonUpdateWalls() {
 		walls.clear();
+		String levelTitle = LEVEL + level;
 
-		List<int[]> wallPositions = getWallPositionArray(getStringJSONArray("Level0"));
-		List<int[]> wallPositionsLevel1 = getWallPositionArray(getStringJSONArray("Level1"));
-
-		if (level == 0) {
-			for (int x = 0; x < gridSize; x++) {
-				walls.add(new Wall(x * xBuffer, 0));
-				walls.add(new Wall(0, x * yBuffer));
-				walls.add(new Wall(x * xBuffer, yBuffer * (13)));
-				walls.add(new Wall(xBuffer * (gridSize - 2), x * yBuffer));
-			}
-			play.setX(1);
-			play.setY(1);
-
-			for (int x = 0; x < wallPositionsLevel1.size(); x++) {
-				// System.out.println(wallPositions.get(x));
-				walls.add(new Wall(wallPositionsLevel1.get(x)[0] * xBuffer, wallPositionsLevel1.get(x)[1] * yBuffer));
-			}
-			// addWall(walls, 1, 2);
-			// addWall(walls, 2, 2);
-			// addWall(walls, 3, 2);
-			// addWall(walls, 5, 2);
-			// addWall(walls, 6, 2);
-			// addWall(walls, 7, 2);
-			// addWall(walls, 8, 2);
-			// addWall(walls, 8, 1);
-			// addWall(walls, 8, 3);
-			// addWall(walls, 1, 4);
-			// addWall(walls, 2, 4);
-			// addWall(walls, 3, 4);
-			// addWall(walls, 5, 4);
-			// addWall(walls, 6, 4);
-			// addWall(walls, 7, 4);
-			// addWall(walls, 8, 4);
-			// addWall(walls, 1, 5);
-			// addWall(walls, 3, 5);
-			// addWall(walls, 5, 5);
-			// addWall(walls, 5, 6);
-			// addWall(walls, 5, 7);
-			// addWall(walls, 5, 8);
-			// addWall(walls, 5, 9);
-			// addWall(walls, 5, 10);
-			// addWall(walls, 5, 11);
-			// addWall(walls, 6, 5);
-			// addWall(walls, 6, 6);
-			// addWall(walls, 6, 7);
-			// addWall(walls, 6, 8);
-			// addWall(walls, 6, 9);
-			// addWall(walls, 6, 10);
-			// addWall(walls, 6, 11);
-			// addWall(walls, 9, 1);
-			// addWall(walls, 9, 2);
-			// addWall(walls, 9, 3);
-			// addWall(walls, 10, 1);
-			// addWall(walls, 10, 2);
-			// addWall(walls, 10, 3);
-			// addWall(walls, 11, 1);
-			// addWall(walls, 11, 2);
-			// addWall(walls, 11, 3);
-			// addWall(walls, 8, 4);
-			// addWall(walls, 9, 4);
-			// addWall(walls, 8, 12);
-			// addWall(walls, 8, 11);
-			// addWall(walls, 8, 10);
-			// addWall(walls, 8, 9);
-			// addWall(walls, 9, 12);
-			// addWall(walls, 9, 11);
-			// addWall(walls, 9, 10);
-			// addWall(walls, 9, 9);
-			// addWall(walls, 11, 5);
-			// addWall(walls, 11, 8);
-			// addWall(walls, 11, 9);
-			// addWall(walls, 11, 10);
-			// addWall(walls, 11, 11);
-			// addWall(walls, 11, 4);
-			// addWall(walls, 10, 10);
-			// addWall(walls, 10, 11);
-			// addWall(walls, 10, 12);
-			// addWall(walls, 12, 1);
-			// addWall(walls, 13, 1);
-			// addWall(walls, 14, 1);
-			// addWall(walls, 15, 1);
-			// addWall(walls, 16, 1);
-			// addWall(walls, 17, 1);
-			// addWall(walls, 17, 2);
-			// addWall(walls, 17, 3);
-			// addWall(walls, 17, 4);
-			// addWall(walls, 17, 5);
-			// addWall(walls, 17, 6);
-			// addWall(walls, 17, 7);
-			// addWall(walls, 17, 8);
-			// addWall(walls, 17, 9);
-			// addWall(walls, 17, 10);
-			// addWall(walls, 17, 11);
-			// addWall(walls, 17, 12);
-			// addWall(walls, 16, 12);
-			// addWall(walls, 15, 12);
-			// addWall(walls, 14, 12);
-			// addWall(walls, 13, 12);
-			// addWall(walls, 12, 12);
-			// addWall(walls, 11, 12);
-		} else if (level == 1) {
-			addWall(walls, 1, 1);
-			addWall(walls, 1, 3);
-			addWall(walls, 1, 5);
-			addWall(walls, 1, 7);
-			addWall(walls, 1, 9);
-			addWall(walls, 1, 11);
-			walls.add(new Wall(xBuffer * 3, yBuffer * 4));
-			walls.add(new Wall(xBuffer * 4, yBuffer * 4));
-			walls.add(new Wall(xBuffer * 5, yBuffer * 4));
-			walls.add(new Wall(xBuffer * 6, yBuffer * 4));
-			walls.add(new Wall(xBuffer * 7, yBuffer * 4));
-			walls.add(new Wall(xBuffer * 8, yBuffer * 4));
-			for (int x = 0; x < gridSize; x++) {
-				walls.add(new Wall(x * xBuffer, 0));
-				walls.add(new Wall(0, x * yBuffer));
-				walls.add(new Wall(x * xBuffer, yBuffer * (13)));
-				walls.add(new Wall(xBuffer * (gridSize - 2), x * yBuffer));
-			}
-		} else {
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> wallPositions = getWallPositionArray(getStringJSONArray(levelTitle));
 			for (int x = 0; x < wallPositions.size(); x++) {
-				// System.out.println(wallPositions.get(x));
 				walls.add(new Wall(wallPositions.get(x)[0] * xBuffer, wallPositions.get(x)[1] * yBuffer));
 			}
-			// for (int x = 0; x < gridSize; x++) {
-			// walls.add(new Wall(x * xBuffer, 0));
-			// walls.add(new Wall(0, x * yBuffer));
-			// walls.add(new Wall(x * xBuffer, yBuffer * (13)));
-			// walls.add(new Wall(xBuffer * (gridSize - 2), x * yBuffer));
-			// }
-			/*
-			 * for (int x = 0; x < gridSize; x++){
-			 * walls.add(new Wall(x*xBuffer, 6*yBuffer));
-			 * walls.add(new Wall(x*xBuffer, 10*yBuffer));
-			 * }
-			 */
 		}
 	}
 
@@ -521,23 +461,13 @@ public class GUI {
 
 	public void updateExits() {
 		exits.clear();
-		if (level == 0) {
-			exits.add(new Exit(10 * xBuffer, 4 * yBuffer));
-			exits.add(new Exit(10 * xBuffer, 9 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 2 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 3 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 4 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 5 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 6 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 7 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 8 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 9 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 10 * yBuffer));
-			exits.add(new Exit(16 * xBuffer, 11 * yBuffer));
-		} else if (level == 1) {
-			exits.add(new Exit(xBuffer * 9, yBuffer * 3));
-		} else {
-			exits.add(new Exit((level * 2) * xBuffer, (level * 2 * yBuffer)));
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> exitPositions = getExitPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < exitPositions.size(); x++) {
+				exits.add(new Exit(exitPositions.get(x)[0] * xBuffer, exitPositions.get(x)[1] * yBuffer));
+			}
 		}
 	}
 
@@ -547,17 +477,50 @@ public class GUI {
 
 	public void updateDoors() {
 		doors.clear();
-		if (level == 0) {
-			addDoor(doors, 3, 1);
-			addDoor(doors, 5, 1);
-			addDoor(doors, 3, 3);
-			addDoor(doors, 5, 3);
-			addDoor(doors, 4, 4);
-			addDoor(doors, 5, 12);
-			addDoor(doors, 11, 6);
-			addDoor(doors, 11, 7);
-		} else {
-			doors.add(new Door(level * 1 * xBuffer, level * 1 * yBuffer));
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> doorPositions = getDoorPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < doorPositions.size(); x++) {
+				doors.add(new Door(doorPositions.get(x)[0] * xBuffer, doorPositions.get(x)[1] * yBuffer));
+			}
+		}
+	}
+
+	public void updateCoins() {
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> coinPositions = getCoinPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < coinPositions.size(); x++) {
+				items.add(new Collectable(coinPositions.get(x)[0] * xBuffer,
+						coinPositions.get(x)[1] * yBuffer, COIN));
+			}
+		}
+	}
+
+	public void updateTorches() {
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> torchPositions = getTorchPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < torchPositions.size(); x++) {
+				items.add(new Collectable(torchPositions.get(x)[0] * xBuffer,
+						torchPositions.get(x)[1] * yBuffer, TORCH));
+			}
+		}
+	}
+
+	public void updatePlayerSpawn() {
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> spawnPositionsLevel = getSpawnPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < spawnPositionsLevel.size(); x++) {
+				// move player here
+				play.setX(spawnPositionsLevel.get(x)[0]);
+				play.setY(spawnPositionsLevel.get(x)[1]);
+			}
 		}
 	}
 
@@ -586,6 +549,7 @@ public class GUI {
 	}
 
 	public void nextLevel() {
+		items.clear();
 		level++;
 		f.remove(p);
 		// f.add(inventoryScreen);
@@ -600,29 +564,13 @@ public class GUI {
 		}
 		// f.remove(inventoryScreen);
 		f.add(p);
-		if (level == 1) {
-			for (int x = 5; x < 10; x++) {
-				for (int y = 5; y < 10; y++) {
-					if (x == 5 || x == 9 || y == 5 || y == 9) {
-						items.add(new Collectable(x * xBuffer, y * yBuffer, "Coin"));
-					}
-				}
-			}
-			items.add(new Collectable(6 * xBuffer, 6 * yBuffer, "Bomb"));
-		} else if (level == 0) {
-			items.add(new Collectable(2, 10, "Coin"));
-			items.add(new Collectable(1, 3, "Coin"));
-		} else {
-			for (int x = 0; x < 5; x++) {
-				if (rand.nextInt(2) == 0) {
-					items.add(new Collectable(5 * xBuffer, x * yBuffer, "Coin"));
-				}
-			}
-		}
 		System.out.println("LEVEL " + level);
 		updateWalls();
 		updateDoors();
 		updateExits();
+		updateCoins();
+		updateTorches();
+		updatePlayerSpawn();
 	}
 
 	public List<List<Collider>> getColliders() {

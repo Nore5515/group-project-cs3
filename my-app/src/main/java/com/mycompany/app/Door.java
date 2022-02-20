@@ -28,14 +28,15 @@ public class Door extends Collider {
 	public void removeSelf(List<List<Collider>> colliders) {
 		int index = -1;
 		for (int i = 0; i < colliders.get(3).size(); i++) {
-			System.out.println("Does " + x + "=" + colliders.get(3).get(i).getX() + " as well as " + y + "="
-					+ colliders.get(3).get(i).getY());
+			// System.out.println("Does " + x + "=" + colliders.get(3).get(i).getX() + " as
+			// well as " + y + "="
+			// + colliders.get(3).get(i).getY());
 			if (x == colliders.get(3).get(i).getX() && y == colliders.get(3).get(i).getY()) {
 				index = i;
 			}
 		}
 		colliders.get(3).remove(index);
-		System.out.println("Collider Removed!");
+		// System.out.println("Collider Removed!");
 	}
 
 }
