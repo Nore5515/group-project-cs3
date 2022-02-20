@@ -263,6 +263,7 @@ public class GUI {
 		colliders.add(traps);
 
 		// Status Screen
+		// TODO Move movement events to the new movementTick function
 		statusScreen = new JPanel() {
 
 			@Override
@@ -310,26 +311,13 @@ public class GUI {
 
 				}
 
+				// WHY IS TORCH HEALTH BEING CALCULATED ON REDRAW
+				// WHAT IS WRONG ME
+				// PAST ME THAT IS
+				// TODO FUKIN A
+				// ...i fixed it, somehow....
 				// if torch is being used...
-				if (torchUsed) {
-					torchHealth--;
-					if (torchHealth <= 0) {
-						System.out.println("Your torch fizzles out..");
-						torchUsed = false;
-						inventory.remove(TORCH);
-						// commandItems.remove(c);
-						System.out.println(Torches.size());
-						// numLists--;
-						// Not currently being used
-						torchHealth = 30;
-						this.revalidate();
-						sightRange = 2;
-					} else {
-						sightRange = 5;
-					}
-				} else {
-					sightRange = 2;
-				}
+				movementTick(Torches);
 
 				if (coinUsed) {
 					inventory.remove("Coin");
@@ -587,6 +575,28 @@ public class GUI {
 
 		p.repaint();
 		f.revalidate();
+	}
+
+	public void movementTick(List<String> Torches) {
+		System.out.println("movement tick");
+		if (torchUsed) {
+			torchHealth--;
+			if (torchHealth <= 0) {
+				System.out.println("Your torch fizzles out..");
+				torchUsed = false;
+				inventory.remove(TORCH);
+				// commandItems.remove(c);
+				System.out.println(Torches.size());
+				// numLists--;
+				// Not currently being used
+				torchHealth = 30;
+				sightRange = 2;
+			} else {
+				sightRange = 5;
+			}
+		} else {
+			sightRange = 2;
+		}
 	}
 
 	public void nextLevel() {
