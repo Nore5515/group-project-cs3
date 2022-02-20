@@ -59,6 +59,8 @@ public class GUI {
 	List<Collider> doors;
 	// item 4
 	List<Collider> bombs;
+	// item 5
+	List<Collider> traps;
 
 	Random rand = new Random();
 
@@ -132,6 +134,20 @@ public class GUI {
 			}
 		}
 		return doorArray;
+	}
+
+	public List<int[]> getTrapPositionArray(JSONArray jArray) {
+		ArrayList<int[]> trapArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'T') {
+					trapArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return trapArray;
 	}
 
 	public List<int[]> getCoinPositionArray(JSONArray jArray) {
@@ -227,11 +243,14 @@ public class GUI {
 
 		inventory = new ArrayList<>();
 
+		// TO-DO
+		// Update Function
 		colliders = new ArrayList<>();
 		items = new ArrayList<>();
 		walls = new ArrayList<>();
 		exits = new ArrayList<>();
 		doors = new ArrayList<>();
+		traps = new ArrayList<>();
 		// Item 0
 		colliders.add(items);
 		// Item 1
@@ -240,6 +259,8 @@ public class GUI {
 		colliders.add(exits);
 		// Item 3
 		colliders.add(doors);
+		// Item 4
+		colliders.add(traps);
 
 		// Status Screen
 		statusScreen = new JPanel() {
@@ -340,6 +361,10 @@ public class GUI {
 		// Add Player Spawn
 		updatePlayerSpawn();
 
+		// Add Traps
+		updateTraps();
+
+		// HUGE ASS FUNCTION
 		p = new JPanel() {
 			// Below is Panel Painting
 			@Override
@@ -357,6 +382,10 @@ public class GUI {
 					g.drawLine(0, y * yBuffer, f.getWidth(), y * yBuffer);
 				}
 				// New Graph Above
+
+				// GOTTA BE AN EASIER WAY vvv
+				// It seems we use colliders.get(x) for getting position arrays
+				// Surely this could be a for loop?
 
 				// Draws coins Below
 				g.setColor(Color.YELLOW);
@@ -395,6 +424,15 @@ public class GUI {
 					g.fillRect(colliders.get(3).get(x).getX(), colliders.get(3).get(x).getY(), xBuffer, yBuffer);
 				}
 				// Draws Doors Above
+
+				// Draws Traps Below (if torch is active)
+				if (torchUsed) {
+					g.setColor(new Color(190, 60, 80));
+					for (int x = 0; x < colliders.get(4).size(); x++) {
+						g.fillRect(colliders.get(4).get(x).getX(), colliders.get(4).get(x).getY(), xBuffer, yBuffer);
+					}
+				}
+				// Draws Traps Above
 
 				// Player Below
 				g.setColor(Color.RED);
@@ -483,6 +521,18 @@ public class GUI {
 			List<int[]> doorPositions = getDoorPositionArray(getStringJSONArray(levelTitle));
 			for (int x = 0; x < doorPositions.size(); x++) {
 				doors.add(new Door(doorPositions.get(x)[0] * xBuffer, doorPositions.get(x)[1] * yBuffer));
+			}
+		}
+	}
+
+	public void updateTraps() {
+		traps.clear();
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> trapPositions = getTrapPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < trapPositions.size(); x++) {
+				traps.add(new Trap(trapPositions.get(x)[0] * xBuffer, trapPositions.get(x)[1] * yBuffer));
 			}
 		}
 	}
