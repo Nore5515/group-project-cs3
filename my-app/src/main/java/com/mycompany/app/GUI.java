@@ -150,6 +150,20 @@ public class GUI {
 		return trapArray;
 	}
 
+	public List<int[]> getBombPositionArray(JSONArray jArray) {
+		ArrayList<int[]> bombArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'B') {
+					bombArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return bombArray;
+	}
+
 	public List<int[]> getCoinPositionArray(JSONArray jArray) {
 		ArrayList<int[]> coinArray = new ArrayList<>();
 		char[] mapLine;
@@ -251,6 +265,7 @@ public class GUI {
 		exits = new ArrayList<>();
 		doors = new ArrayList<>();
 		traps = new ArrayList<>();
+		bombs = new ArrayList<>();
 		// Item 0
 		colliders.add(items);
 		// Item 1
@@ -261,6 +276,8 @@ public class GUI {
 		colliders.add(doors);
 		// Item 4
 		colliders.add(traps);
+		// Item 4
+		colliders.add(bombs);
 
 		// Status Screen
 		// TODO Move movement events to the new movementTick function
@@ -353,6 +370,9 @@ public class GUI {
 		// Add Traps
 		updateTraps();
 
+		// Add Bombs
+		updateBombs();
+
 		// HUGE ASS FUNCTION
 		p = new JPanel() {
 			// Below is Panel Painting
@@ -407,6 +427,13 @@ public class GUI {
 					}
 				}
 				// Draws Traps Above
+
+				// Draws Bombs Below
+				g.setColor(new Color(50, 50, 50));
+				for (int x = 0; x < colliders.get(5).size(); x++) {
+					g.fillRect(colliders.get(5).get(x).getX(), colliders.get(5).get(x).getY(), xBuffer, yBuffer);
+				}
+				// Draws Bombs Above
 
 				// Player Below
 				g.setColor(Color.RED);
@@ -516,6 +543,18 @@ public class GUI {
 		}
 	}
 
+	public void updateBombs() {
+		bombs.clear();
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> bombPositions = getBombPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < bombPositions.size(); x++) {
+				bombs.add(new Bomb(bombPositions.get(x)[0] * xBuffer, bombPositions.get(x)[1] * yBuffer));
+			}
+		}
+	}
+
 	public void updateCoins() {
 		String levelTitle = LEVEL + level;
 
@@ -578,7 +617,7 @@ public class GUI {
 	}
 
 	public void movementTick(List<String> Torches) {
-		System.out.println("movement tick");
+		// System.out.println("movement tick");
 		if (torchUsed) {
 			torchHealth--;
 			if (torchHealth <= 0) {
@@ -622,6 +661,8 @@ public class GUI {
 		updateCoins();
 		updateTorches();
 		updatePlayerSpawn();
+		updateTraps();
+		updateBombs();
 	}
 
 	public List<List<Collider>> getColliders() {
