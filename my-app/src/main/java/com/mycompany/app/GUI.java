@@ -42,6 +42,7 @@ public class GUI {
 	// Consts
 	private static final String TORCH = "Torch";
 	private static final String COIN = "Coin";
+	private static final String BOMB = "Bomb";
 	private static final String LEVEL = "Level";
 
 	// List of all held items
@@ -61,6 +62,10 @@ public class GUI {
 	List<Collider> bombs;
 	// item 5
 	List<Collider> traps;
+	// item 6
+	List<Collider> bombPickups;
+	// item 7
+	List<Collider> placedBombs;
 
 	Random rand = new Random();
 
@@ -148,6 +153,34 @@ public class GUI {
 			}
 		}
 		return trapArray;
+	}
+
+	public List<int[]> getBombPositionArray(JSONArray jArray) {
+		ArrayList<int[]> bombArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'B') {
+					bombArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return bombArray;
+	}
+
+	public List<int[]> getBombPickupPositionArray(JSONArray jArray) {
+		ArrayList<int[]> bombPickupArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'b') {
+					bombPickupArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return bombPickupArray;
 	}
 
 	public List<int[]> getCoinPositionArray(JSONArray jArray) {
@@ -251,6 +284,8 @@ public class GUI {
 		exits = new ArrayList<>();
 		doors = new ArrayList<>();
 		traps = new ArrayList<>();
+		bombs = new ArrayList<>();
+		placedBombs = new ArrayList<>();
 		// Item 0
 		colliders.add(items);
 		// Item 1
@@ -261,6 +296,8 @@ public class GUI {
 		colliders.add(doors);
 		// Item 4
 		colliders.add(traps);
+		// Item 5
+		colliders.add(bombs);
 
 		// Status Screen
 		// TODO Move movement events to the new movementTick function
@@ -280,6 +317,7 @@ public class GUI {
 				// Lists for Stackable Items (ex. Potions, Coins, etc)
 				List<String> Coins = new ArrayList<>();
 				List<String> Torches = new ArrayList<>();
+				List<String> BombPickups = new ArrayList<>();
 
 				List<Command> commandItems = new ArrayList<>();
 
@@ -291,7 +329,9 @@ public class GUI {
 					if (inventory.get(x).compareTo(TORCH) == 0) {
 						Torches.add(inventory.get(x));
 					}
-
+					if (inventory.get(x).compareTo(BOMB) == 0) {
+						BombPickups.add(inventory.get(x));
+					}
 				}
 
 				if (!Coins.isEmpty()) {
@@ -308,13 +348,21 @@ public class GUI {
 					numLists++;
 					c = new Command(TORCH, String.valueOf((char) (numLists + 64)), getGUI());
 					commandItems.add(c);
-
+				}
+				if (!BombPickups.isEmpty()) {
+					g.drawString(String.valueOf((char) (numLists + 65)) + ") Bombs: " + BombPickups.size(), 120,
+							20 * (numLists + 1));
+					// g.drawString("Torch Life: " + torchHealth, 270, 20 * (numLists + 1));
+					numLists++;
+					c = new Command(BOMB, String.valueOf((char) (numLists + 64)), getGUI());
+					commandItems.add(c);
 				}
 
 				// WHY IS TORCH HEALTH BEING CALCULATED ON REDRAW
 				// WHAT IS WRONG ME
 				// PAST ME THAT IS
-				// TODO FUKIN A
+				// TODO Torch Health recalculated on redraw?
+				// FUKIN A
 				// ...i fixed it, somehow....
 				// if torch is being used...
 				movementTick(Torches);
@@ -352,6 +400,12 @@ public class GUI {
 
 		// Add Traps
 		updateTraps();
+
+		// Add Bombs
+		updateBombs();
+
+		// Add Bomb Pickups
+		updateBombPickups();
 
 		// HUGE ASS FUNCTION
 		p = new JPanel() {
@@ -407,6 +461,13 @@ public class GUI {
 					}
 				}
 				// Draws Traps Above
+
+				// Draws Bombs Below
+				g.setColor(new Color(50, 50, 50));
+				for (int x = 0; x < colliders.get(5).size(); x++) {
+					g.fillRect(colliders.get(5).get(x).getX(), colliders.get(5).get(x).getY(), xBuffer, yBuffer);
+				}
+				// Draws Bombs Above
 
 				// Player Below
 				g.setColor(Color.RED);
@@ -486,7 +547,8 @@ public class GUI {
 
 	public void toggleTorch() {
 		// For some reason, adding this println makes it work...???
-		// TODO wtf
+		// Theorizing it may have to do with re-draw
+		// TODO wtf torch is weird
 		System.out.println("Toggled Torch!");
 		torchUsed = !torchUsed;
 
@@ -512,6 +574,41 @@ public class GUI {
 			List<int[]> trapPositions = getTrapPositionArray(getStringJSONArray(levelTitle));
 			for (int x = 0; x < trapPositions.size(); x++) {
 				traps.add(new Trap(trapPositions.get(x)[0] * xBuffer, trapPositions.get(x)[1] * yBuffer));
+			}
+		}
+	}
+
+	public void updateBombs() {
+		bombs.clear();
+		String levelTitle = LEVEL + level;
+		System.out.println("Update Bombs");
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> bombPositions = getBombPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < bombPositions.size(); x++) {
+				bombs.add(new Bomb(bombPositions.get(x)[0] * xBuffer, bombPositions.get(x)[1] * yBuffer));
+			}
+		}
+		// Since Bombs are unique in that they can be placed
+		// they have a special check for a special array of placed bombs.
+		if (!placedBombs.isEmpty()) {
+			for (int x = 0; x < placedBombs.size(); x++) {
+				System.out.println("Placing bomb");
+				bombs.add(placedBombs.get(x));
+			}
+		}
+	}
+
+	public void updateBombPickups() {
+		// bombPickups.clear();
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> bombPickupPositions = getBombPickupPositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < bombPickupPositions.size(); x++) {
+				items.add(
+						new Collectable(bombPickupPositions.get(x)[0] * xBuffer,
+								bombPickupPositions.get(x)[1] * yBuffer, BOMB));
 			}
 		}
 	}
@@ -578,7 +675,7 @@ public class GUI {
 	}
 
 	public void movementTick(List<String> Torches) {
-		System.out.println("movement tick");
+		// System.out.println("movement tick");
 		if (torchUsed) {
 			torchHealth--;
 			if (torchHealth <= 0) {
@@ -622,6 +719,9 @@ public class GUI {
 		updateCoins();
 		updateTorches();
 		updatePlayerSpawn();
+		updateTraps();
+		updateBombs();
+		updateBombPickups();
 	}
 
 	public List<List<Collider>> getColliders() {
@@ -633,7 +733,9 @@ public class GUI {
 	}
 
 	public void toggleBomb() {
-		// Never implemented?
+		System.out.println("Bomb Toggled");
+		placedBombs.add(new Bomb(2 * xBuffer, 2 * yBuffer));
+		updateBombs();
 	}
 
 	public void toggleCoin() {
