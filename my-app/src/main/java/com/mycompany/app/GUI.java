@@ -65,7 +65,7 @@ public class GUI {
 	// item 6
 	List<Collider> bombPickups;
 	// item 7
-	List<Collider> placedBombs;
+	List<Bomb> placedBombs;
 
 	Random rand = new Random();
 
@@ -462,12 +462,35 @@ public class GUI {
 				}
 				// Draws Traps Above
 
-				// Draws Bombs Below
-				g.setColor(new Color(50, 50, 50));
-				for (int x = 0; x < colliders.get(5).size(); x++) {
-					g.fillRect(colliders.get(5).get(x).getX(), colliders.get(5).get(x).getY(), xBuffer, yBuffer);
+				// // Draws Bombs Below
+				// g.setColor(new Color(50, 50, 50));
+				// for (int x = 0; x < colliders.get(5).size(); x++) {
+				// g.fillRect(colliders.get(5).get(x).getX(), colliders.get(5).get(x).getY(),
+				// xBuffer, yBuffer);
+				// }
+				// // Draws Bombs Above
+
+				// Draws Bombs at 3 life
+				g.setColor(new Color(50, 0, 50));
+				for (int x = 0; x < placedBombs.size(); x++) {
+					if (placedBombs.get(x).life >= 2) {
+						g.fillRect(placedBombs.get(x).getX(), placedBombs.get(x).getY(), xBuffer, yBuffer);
+					}
 				}
-				// Draws Bombs Above
+				// Draws Bombs at 2 life
+				g.setColor(new Color(125, 0, 125));
+				for (int x = 0; x < placedBombs.size(); x++) {
+					if (placedBombs.get(x).life == 1) {
+						g.fillRect(placedBombs.get(x).getX(), placedBombs.get(x).getY(), xBuffer, yBuffer);
+					}
+				}
+				// Draws Bombs at 1 life
+				g.setColor(new Color(250, 0, 250));
+				for (int x = 0; x < placedBombs.size(); x++) {
+					if (placedBombs.get(x).life <= 0) {
+						g.fillRect(placedBombs.get(x).getX(), placedBombs.get(x).getY(), xBuffer, yBuffer);
+					}
+				}
 
 				// Player Below
 				g.setColor(Color.RED);
@@ -589,6 +612,12 @@ public class GUI {
 				bombs.add(new Bomb(bombPositions.get(x)[0] * xBuffer, bombPositions.get(x)[1] * yBuffer));
 			}
 		}
+
+	}
+
+	public void updatePlacedBombs() {
+		bombs.clear();
+		System.out.println("Update Bombs");
 		// Since Bombs are unique in that they can be placed
 		// they have a special check for a special array of placed bombs.
 		if (!placedBombs.isEmpty()) {
@@ -694,6 +723,11 @@ public class GUI {
 		} else {
 			sightRange = 2;
 		}
+
+		// Bomb Countdown
+		for (int x = 0; x < placedBombs.size(); x++) {
+			bombCountdown(placedBombs.get(x));
+		}
 	}
 
 	public void nextLevel() {
@@ -734,8 +768,75 @@ public class GUI {
 
 	public void toggleBomb() {
 		System.out.println("Bomb Toggled");
-		placedBombs.add(new Bomb(2 * xBuffer, 2 * yBuffer));
-		updateBombs();
+		placedBombs.add(new Bomb(play.getX() * xBuffer, play.getY() * yBuffer, this));
+		updatePlacedBombs();
+	}
+
+	public boolean removePlacedBomb(Bomb b) {
+		for (int x = placedBombs.size() - 1; x >= 0; x--) {
+			if (placedBombs.get(x) == b) {
+				placedBombs.remove(x);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean bombCountdown(Bomb b) {
+		if (b.life <= 0) {
+			detonateBomb(b);
+			b.playerCollision(play, getColliders(), guiKList);
+			return true;
+		} else {
+			b.life -= 1;
+		}
+		return false;
+	}
+
+	public boolean detonateBomb(Bomb b) {
+		System.out.println("DETONATING");
+		int[][] points = new int[][] {
+				{ -1, -1 }, { -1, 0 }, { -1, 1 },
+				{ 0, -1 }, { 0, 0 }, { 0, 1 },
+				{ 1, -1 }, { 1, 0 }, { 1, 1 }
+		};
+		// Each adjacent tile can be found with
+		// b.getX() + (points[x][0] * xBuffer), b.getY() + (points[x][1] * yBuffer);
+
+		Wall w;
+
+		for (int wallIndex = 0; wallIndex < colliders.get(1).size(); wallIndex++) {
+			int[] position = new int[] { colliders.get(1).get(wallIndex).getX(),
+					colliders.get(1).get(wallIndex).getY() };
+			for (int x = 0; x < points.length; x++) {
+				int[] adjacentPos = { b.getX() + (points[x][0] * xBuffer), b.getY() + (points[x][1] * yBuffer) };
+				System.out
+						.printf(adjacentPos[0] + "," + adjacentPos[1] + " = " + position[0] + ","
+								+ position[1] + "? ");
+				System.out.printf("\nAdjacent: %-30.30s %-30.30s%n", adjacentPos[0], position[0]);
+				if (position[0] == adjacentPos[0] && position[1] == adjacentPos[1]) {
+					try {
+						System.out.println("\n\tAttempting detonation...\n");
+						w = (Wall) colliders.get(1).get(wallIndex);
+						w.destroySelf(getColliders());
+					} catch (Exception e) {
+						System.out.println("\n\n\t\tFailure to destroy wall" + e);
+					}
+				}
+			}
+		}
+
+		// for (int x = 0; x < colliders.size(); x++) {
+		// for (int y = 0; y < colliders.get(x).size(); y++) {
+		// if (b.getX() == colliders.get(x).get(y).getX() && b.getY() ==
+		// colliders.get(x).get(y).getY()) {
+		// // return colliders.get(x).get(y).playerCollision(p, colliders, this);
+		// }
+		// }
+
+		// }
+		return false;
+
 	}
 
 	public void toggleCoin() {
