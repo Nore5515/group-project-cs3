@@ -38,6 +38,7 @@ public class GUI {
 	int torchHealth;
 	boolean torchUsed;
 	boolean coinUsed;
+	String msg;
 
 	// Consts
 	private static final String TORCH = "Torch";
@@ -61,6 +62,8 @@ public class GUI {
 	List<Collider> bombs;
 	// item 5
 	List<Collider> traps;
+	// item 6
+	List<Collider> purchaseTiles;
 
 	Random rand = new Random();
 
@@ -94,6 +97,7 @@ public class GUI {
 		}
 	}
 
+	// TODO Refactor the hell outta these lmao
 	public List<int[]> getWallPositionArray(JSONArray jArray) {
 		ArrayList<int[]> wallArray = new ArrayList<>();
 		char[] mapLine;
@@ -148,6 +152,20 @@ public class GUI {
 			}
 		}
 		return trapArray;
+	}
+
+	public List<int[]> getPurchaseTilePositionArray(JSONArray jArray) {
+		ArrayList<int[]> purchaseTileArray = new ArrayList<>();
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'p') {
+					purchaseTileArray.add(new int[] { y, x });
+				}
+			}
+		}
+		return purchaseTileArray;
 	}
 
 	public List<int[]> getCoinPositionArray(JSONArray jArray) {
@@ -251,6 +269,7 @@ public class GUI {
 		exits = new ArrayList<>();
 		doors = new ArrayList<>();
 		traps = new ArrayList<>();
+		purchaseTiles = new ArrayList<>();
 		// Item 0
 		colliders.add(items);
 		// Item 1
@@ -261,6 +280,8 @@ public class GUI {
 		colliders.add(doors);
 		// Item 4
 		colliders.add(traps);
+		// Item 6??? maybe 5????
+		colliders.add(purchaseTiles);
 
 		// Status Screen
 		// TODO Move movement events to the new movementTick function
@@ -276,6 +297,7 @@ public class GUI {
 				// Displays Coords
 				g.setFont(new Font("Arial", 0, 20));
 				g.drawString("HP: " + play.hp + "/" + play.maxHP, 10, 20);
+				g.drawString(msg, 70, 20);
 
 				// Lists for Stackable Items (ex. Potions, Coins, etc)
 				List<String> Coins = new ArrayList<>();
@@ -353,6 +375,9 @@ public class GUI {
 		// Add Traps
 		updateTraps();
 
+		// Add Purchase Tiles
+		updatePurchaseTiles();
+
 		// HUGE ASS FUNCTION
 		p = new JPanel() {
 			// Below is Panel Painting
@@ -407,6 +432,13 @@ public class GUI {
 					}
 				}
 				// Draws Traps Above
+
+				// Draw Purchase Tiles below
+				g.setColor(new Color(30, 60, 240));
+				for (int x = 0; x < colliders.get(5).size(); x++) {
+					g.fillRect(colliders.get(5).get(x).getX(), colliders.get(5).get(x).getY(), xBuffer, yBuffer);
+				}
+				// Draws Purchase Tiles Above
 
 				// Player Below
 				g.setColor(Color.RED);
@@ -512,6 +544,19 @@ public class GUI {
 			List<int[]> trapPositions = getTrapPositionArray(getStringJSONArray(levelTitle));
 			for (int x = 0; x < trapPositions.size(); x++) {
 				traps.add(new Trap(trapPositions.get(x)[0] * xBuffer, trapPositions.get(x)[1] * yBuffer));
+			}
+		}
+	}
+
+	public void updatePurchaseTiles() {
+		purchaseTiles.clear();
+		String levelTitle = LEVEL + level;
+
+		if (getStringJSONArray(levelTitle) != null) {
+			List<int[]> purchaseTilesPositions = getPurchaseTilePositionArray(getStringJSONArray(levelTitle));
+			for (int x = 0; x < purchaseTilesPositions.size(); x++) {
+				purchaseTiles.add(new Purchase(purchaseTilesPositions.get(x)[0] * xBuffer,
+						purchaseTilesPositions.get(x)[1] * yBuffer));
 			}
 		}
 	}
@@ -622,6 +667,8 @@ public class GUI {
 		updateCoins();
 		updateTorches();
 		updatePlayerSpawn();
+		updateTraps();
+		updatePurchaseTiles();
 	}
 
 	public List<List<Collider>> getColliders() {
