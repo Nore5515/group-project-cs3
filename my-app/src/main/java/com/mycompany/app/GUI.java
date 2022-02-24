@@ -770,6 +770,7 @@ public class GUI {
 		System.out.println("Bomb Toggled");
 		placedBombs.add(new Bomb(play.getX() * xBuffer, play.getY() * yBuffer, this));
 		updatePlacedBombs();
+		inventory.remove(BOMB);
 	}
 
 	public boolean removePlacedBomb(Bomb b) {
@@ -793,50 +794,43 @@ public class GUI {
 		return false;
 	}
 
-	public boolean detonateBomb(Bomb b) {
-		System.out.println("DETONATING");
-		int[][] points = new int[][] {
-				{ -1, -1 }, { -1, 0 }, { -1, 1 },
-				{ 0, -1 }, { 0, 0 }, { 0, 1 },
-				{ 1, -1 }, { 1, 0 }, { 1, 1 }
-		};
-		// Each adjacent tile can be found with
-		// b.getX() + (points[x][0] * xBuffer), b.getY() + (points[x][1] * yBuffer);
+	// Return adjacent walls to a grid location by distance
+	public List<Collider> getAdjacentWalls(int x, int y) {
+		List<Collider> adja = new ArrayList<>();
 
-		Wall w;
+		int[] loc = new int[] { x, y };
 
-		for (int wallIndex = 0; wallIndex < colliders.get(1).size(); wallIndex++) {
-			int[] position = new int[] { colliders.get(1).get(wallIndex).getX(),
-					colliders.get(1).get(wallIndex).getY() };
-			for (int x = 0; x < points.length; x++) {
-				int[] adjacentPos = { b.getX() + (points[x][0] * xBuffer), b.getY() + (points[x][1] * yBuffer) };
-				System.out
-						.printf(adjacentPos[0] + "," + adjacentPos[1] + " = " + position[0] + ","
-								+ position[1] + "? ");
-				System.out.printf("\nAdjacent: %-30.30s %-30.30s%n", adjacentPos[0], position[0]);
-				if (position[0] == adjacentPos[0] && position[1] == adjacentPos[1]) {
-					try {
-						System.out.println("\n\tAttempting detonation...\n");
-						w = (Wall) colliders.get(1).get(wallIndex);
-						w.destroySelf(getColliders());
-					} catch (Exception e) {
-						System.out.println("\n\n\t\tFailure to destroy wall" + e);
-					}
-				}
+		for (int i = 0; i < colliders.get(1).size(); i++) {
+			// Get distance from wall to loc
+			System.out.println("Location: " + colliders.get(1).get(i).getX() + "," + colliders.get(1).get(i).getY());
+			int distX = (colliders.get(1).get(i).getX() - loc[0]);
+			int distY = (colliders.get(1).get(i).getY() - loc[1]);
+			double dist = Math.sqrt((distX * distX) + (double) (distY * distY));
+			System.out.println("Distance: " + dist);
+			if (dist < xBuffer * 2) {
+				System.out.println("Close enough!" + colliders.get(1).get(i).getX() + ","
+						+ colliders.get(1).get(i).getY() + " to " + x + "," + y);
+				adja.add(colliders.get(1).get(i));
 			}
 		}
 
-		// for (int x = 0; x < colliders.size(); x++) {
-		// for (int y = 0; y < colliders.get(x).size(); y++) {
-		// if (b.getX() == colliders.get(x).get(y).getX() && b.getY() ==
-		// colliders.get(x).get(y).getY()) {
-		// // return colliders.get(x).get(y).playerCollision(p, colliders, this);
-		// }
-		// }
+		System.out.println(adja.size());
+		return adja;
+	}
 
-		// }
+	public boolean detonateBomb(Bomb b) {
+		System.out.println("DETONATING");
+		try {
+			List<Collider> wallsToDestroy = getAdjacentWalls(b.getX(), b.getY());
+			for (Collider wall : wallsToDestroy) {
+				Wall w = (Wall) wall;
+				w.destroySelf(getColliders());
+			}
+			return true;
+		} catch (Exception e) {
+			System.out.println("Error in detonation!");
+		}
 		return false;
-
 	}
 
 	public void toggleCoin() {
