@@ -365,9 +365,9 @@ public class GUI {
 		// Item 4
 		colliders.add(traps);
 		// Item 5
-		colliders.add(bombs);
-		// Item 6??? maybe 5????
 		colliders.add(purchaseTiles);
+		// Item 6??? maybe 5????
+		colliders.add(bombs);
 
 		// Status Screen
 		// TODO Move movement events to the new movementTick function
