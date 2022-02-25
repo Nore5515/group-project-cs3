@@ -23,6 +23,7 @@ public class Command {
 
 	// HERE IS THA MAGIC
 	public void activate() {
+		// TODO coin eat?!!?!?!??!?
 		if ("Coin".equals(item)) {
 			// System.out.println("Yum!");
 			gui.play.setHP(gui.play.getHP() + 1);
