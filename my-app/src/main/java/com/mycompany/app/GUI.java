@@ -21,6 +21,20 @@ import javax.swing.*;
 
 public class GUI {
 
+	class PurchaseTileClass {
+		int x;
+		int y;
+		int price;
+		String item;
+
+		PurchaseTileClass(int _x, int _y, int _price, String _item) {
+			x = _x;
+			y = _y;
+			price = _price;
+			item = _item;
+		}
+	}
+
 	protected static final Component JLabel = null;
 	JFrame f;
 	JPanel p;
@@ -38,7 +52,7 @@ public class GUI {
 	int torchHealth;
 	boolean torchUsed;
 	boolean coinUsed;
-	String msg;
+	String msg = "";
 
 	// Consts
 	private static final String TORCH = "Torch";
@@ -94,6 +108,21 @@ public class GUI {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new JSONArray();
+		}
+	}
+
+	public JSONObject getStringLevelJSONArray(String levelTitle) {
+		JSONParser parser = new JSONParser();
+		try {
+			Object obj = parser.parse(new FileReader(
+					"/Users/noah/projects/java/group-project-cs3/my-app/src/main/java/com/mycompany/app/levels.json"));
+
+			JSONObject jsonFile = (JSONObject) obj;
+			JSONObject level0 = (JSONObject) jsonFile.get(levelTitle);
+			return (JSONObject) level0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new JSONObject();
 		}
 	}
 
@@ -165,6 +194,40 @@ public class GUI {
 				}
 			}
 		}
+		return purchaseTileArray;
+	}
+
+	public List<PurchaseTileClass> getPurchaseTileClassArray(JSONObject jObj) {
+		// getStringLevelJSONArray
+		// TODO
+		JSONArray jArray = (JSONArray) jObj.get("rows");
+		ArrayList<PurchaseTileClass> purchaseTileArray = new ArrayList<>();
+		PurchaseTileClass ptc;
+		char[] mapLine;
+		for (int x = 0; x < jArray.size(); x++) {
+			mapLine = ((String) jArray.get(x)).toCharArray();
+			for (int y = 0; y < mapLine.length; y++) {
+				if (mapLine[y] == 'p') {
+					ptc = new PurchaseTileClass(y, x, 3, TORCH);
+					purchaseTileArray.add(ptc);
+				}
+			}
+		}
+		// Iterate through each p, and create PTC's from the "shopContents" section of
+		// the JSON.
+		JSONArray shopContents = (JSONArray) jObj.get("shopContents");
+		for (int x = 0; x < purchaseTileArray.size(); x++) {
+			String shopLine = ((String) shopContents.get(x));
+			System.out.println(shopLine);
+			String[] parts = shopLine.split("-");
+			if (parts.length == 2) {
+				String item = parts[0];
+				int price = Integer.parseInt(parts[1]);
+				purchaseTileArray.get(x).item = item;
+				purchaseTileArray.get(x).price = price;
+			}
+		}
+
 		return purchaseTileArray;
 	}
 
@@ -297,7 +360,7 @@ public class GUI {
 				// Displays Coords
 				g.setFont(new Font("Arial", 0, 20));
 				g.drawString("HP: " + play.hp + "/" + play.maxHP, 10, 20);
-				g.drawString(msg, 70, 20);
+				g.drawString(msg, 240, 20);
 
 				// Lists for Stackable Items (ex. Potions, Coins, etc)
 				List<String> Coins = new ArrayList<>();
@@ -342,11 +405,11 @@ public class GUI {
 				movementTick(Torches);
 
 				if (coinUsed) {
-					inventory.remove("Coin");
+					// inventory.remove("Coin");
 					// numLists--;
 					// Not currently being used
 					this.revalidate();
-					coinUsed = !coinUsed;
+					// coinUsed = !coinUsed;
 				}
 
 				guiKList.updateCommands(commandItems);
@@ -553,10 +616,14 @@ public class GUI {
 		String levelTitle = LEVEL + level;
 
 		if (getStringJSONArray(levelTitle) != null) {
-			List<int[]> purchaseTilesPositions = getPurchaseTilePositionArray(getStringJSONArray(levelTitle));
+			List<PurchaseTileClass> ptcList = getPurchaseTileClassArray(getStringLevelJSONArray(levelTitle));
+			List<int[]> purchaseTilesPositions = new ArrayList<>();
+			for (PurchaseTileClass ptc : ptcList) {
+				purchaseTilesPositions.add(new int[] { ptc.x, ptc.y });
+			}
 			for (int x = 0; x < purchaseTilesPositions.size(); x++) {
 				purchaseTiles.add(new Purchase(purchaseTilesPositions.get(x)[0] * xBuffer,
-						purchaseTilesPositions.get(x)[1] * yBuffer));
+						purchaseTilesPositions.get(x)[1] * yBuffer, this, ptcList.get(x).item, ptcList.get(x).price));
 			}
 		}
 	}
@@ -645,6 +712,7 @@ public class GUI {
 	}
 
 	public void nextLevel() {
+		msg = "";
 		items.clear();
 		level++;
 		f.remove(p);
@@ -685,6 +753,39 @@ public class GUI {
 
 	public void toggleCoin() {
 		coinUsed = !coinUsed;
+	}
+
+	public boolean attemptPurchase(String item, int price) {
+		// TODO
+		List<String> Coins = new ArrayList<>();
+
+		// Adds items to Stackable Items lists
+		for (int x = 0; x < inventory.size(); x++) {
+			if (inventory.get(x).compareTo(COIN) == 0) {
+				Coins.add(inventory.get(x));
+			}
+		}
+
+		if (Coins.size() >= price) {
+			msg = "Purchased " + item;
+			int removedCoins = 0;
+			for (int x = Coins.size() - 1; x >= 0; x--) {
+				removedCoins++;
+				inventory.remove(Coins.get(x));
+				if (removedCoins >= price) {
+					x = -1;
+				}
+			}
+			if ("HP".equals(item)) {
+				play.setHP(play.getHP() + 1);
+			} else {
+				addItem(item);
+			}
+
+		} else {
+			msg = "Not enough coin!";
+		}
+		return true;
 	}
 
 }
